@@ -43,7 +43,7 @@ export function DriverCard({ driver, team, onActivate }: { driver: Driver; team:
         <span className="text-3xl">{driver.flag}</span>
       </div>
       <h3 className="mt-5 font-display text-2xl font-black leading-tight">{driver.name}</h3>
-      <p className="mt-1 text-sm text-muted-foreground">{team.name} · {driver.nationality[language]}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{team.name}</p>
       <Button variant="link" className="mt-4 h-auto p-0">{t.common.readMore}<ArrowRight /></Button>
     </Link>
   );
