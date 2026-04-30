@@ -1,1 +1,96 @@
-{"nav":{"home":"Home","news":"News","drivers":"Drivers","teams":"Teams","calendar":"Calendar","standings":"Standings","about":"About"},"common":{"points":"points","wins":"wins","team":"Team","all":"All","readMore":"View details","completed":"Completed","next":"Next","upcoming":"Upcoming","days":"days","hours":"hours","minutes":"min","seconds":"sec","choose":"Choose","favorite":"Favorite team","drivers":"Drivers","constructors":"Constructors","category":"Category"},"modal":{"title":"Choose your favorite team","subtitle":"Central do Grid will use its colors as the main theme.","save":"Save preference"},"home":{"kicker":"F1 2025 from fans to fans","title":"Central do Grid","subtitle":"News, calendar, drivers, teams, and standings in a dark, fast experience colored by your team.","nextRace":"Countdown to the next race","leaders":"Championship leaders","driverLeader":"Drivers","constructorLeader":"Constructors","latest":"Latest news","featured":"Featured team"},"news":{"title":"News","subtitle":"Realistic mock updates from the 2025 season."},"drivers":{"title":"Drivers","subtitle":"All 20 drivers on the 2025 grid.","number":"Number","nationality":"Nationality","bio":"Bio","career":"Career","season":"2025 season","facts":"Fun facts","starts":"starts","podiums":"podiums","poles":"poles"},"teams":{"title":"Teams","subtitle":"The 10 constructors on the current grid.","history":"History","currentDrivers":"Current drivers","championships":"Constructors' titles","car":"Car","base":"Base","curiosities":"Curiosities"},"calendar":{"title":"2025 Calendar","subtitle":"Races, circuits, and season status."},"standings":{"title":"Standings","subtitle":"Mock 2025 championship table.","position":"Pos","name":"Name","points":"Points","wins":"Wins"},"about":{"title":"About Central do Grid","subtitle":"A hub built for F1 fans to follow the sport with context, premium visuals, and simple navigation.","project":"The project keeps mock data in separate files to make future integration with APIs like OpenF1 or Ergast easy.","credits":"Credits","creditsText":"Central do Grid is an independent fan project. Formula 1, F1, and team names belong to their respective owners."},"footer":{"disclaimer":"Independent fan site. Not affiliated with Formula 1, FIA, or teams.","brand":"Central do Grid"}}
+{
+  "nav": {
+    "home": "Home",
+    "news": "News",
+    "drivers": "Drivers",
+    "teams": "Teams",
+    "calendar": "Calendar",
+    "standings": "Standings",
+    "about": "About"
+  },
+  "common": {
+    "points": "points",
+    "wins": "wins",
+    "team": "Team",
+    "all": "All",
+    "readMore": "View details",
+    "completed": "Completed",
+    "next": "Next",
+    "upcoming": "Upcoming",
+    "days": "days",
+    "hours": "hours",
+    "minutes": "min",
+    "seconds": "sec",
+    "choose": "Choose",
+    "favorite": "Favorite team",
+    "drivers": "Drivers",
+    "constructors": "Constructors",
+    "category": "Category"
+  },
+  "modal": {
+    "title": "Choose your favorite team",
+    "subtitle": "Central do Grid will use its colors as the main theme.",
+    "save": "Save preference"
+  },
+  "home": {
+    "kicker": "F1 2025 from fans to fans",
+    "title": "Central do Grid",
+    "subtitle": "News, calendar, drivers, teams, and standings in a dark, fast experience colored by your team.",
+    "nextRace": "Countdown to the next race",
+    "leaders": "Championship leaders",
+    "driverLeader": "Drivers",
+    "constructorLeader": "Constructors",
+    "latest": "Latest news",
+    "featured": "Featured team"
+  },
+  "news": {
+    "title": "News",
+    "subtitle": "Realistic mock updates from the 2025 season."
+  },
+  "drivers": {
+    "title": "Drivers",
+    "subtitle": "All 22 drivers on the 2026 grid.",
+    "number": "Number",
+    "nationality": "Nationality",
+    "bio": "Bio",
+    "career": "Career",
+    "season": "2026 Season",
+    "facts": "Fun facts",
+    "starts": "starts",
+    "podiums": "podiums",
+    "poles": "poles"
+  },
+  "teams": {
+    "title": "Teams",
+    "subtitle": "The 10 constructors on the current grid.",
+    "history": "History",
+    "currentDrivers": "Current drivers",
+    "championships": "Constructors' titles",
+    "car": "Car",
+    "base": "Base",
+    "curiosities": "Curiosities"
+  },
+  "calendar": {
+    "title": "2025 Calendar",
+    "subtitle": "Races, circuits, and season status."
+  },
+  "standings": {
+    "title": "Standings",
+    "subtitle": "Mock 2025 championship table.",
+    "position": "Pos",
+    "name": "Name",
+    "points": "Points",
+    "wins": "Wins"
+  },
+  "about": {
+    "title": "About Central do Grid",
+    "subtitle": "A hub built for F1 fans to follow the sport with context, premium visuals, and simple navigation.",
+    "project": "The project keeps mock data in separate files to make future integration with APIs like OpenF1 or Ergast easy.",
+    "credits": "Credits",
+    "creditsText": "Central do Grid is an independent fan project. Formula 1, F1, and team names belong to their respective owners."
+  },
+  "footer": {
+    "disclaimer": "Independent fan site. Not affiliated with Formula 1, FIA, or teams.",
+    "brand": "Central do Grid"
+  }
+}

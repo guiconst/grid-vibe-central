@@ -1,1 +1,96 @@
-{"nav":{"home":"Início","news":"Notícias","drivers":"Pilotos","teams":"Equipes","calendar":"Calendário","standings":"Classificação","about":"Sobre"},"common":{"points":"pontos","wins":"vitórias","team":"Equipe","all":"Todas","readMore":"Ver detalhes","completed":"Concluída","next":"Próxima","upcoming":"Em breve","days":"dias","hours":"horas","minutes":"min","seconds":"seg","choose":"Escolher","favorite":"Time favorito","drivers":"Pilotos","constructors":"Construtores","category":"Categoria"},"modal":{"title":"Escolha sua equipe favorita","subtitle":"A Central do Grid vai usar as cores dela como tema principal.","save":"Salvar preferência"},"home":{"kicker":"F1 2025 em tempo real de fã para fã","title":"Central do Grid","subtitle":"Notícias, calendário, pilotos, equipes e classificação em uma experiência escura, rápida e colorida pelo seu time.","nextRace":"Contagem para a próxima corrida","leaders":"Líderes do campeonato","driverLeader":"Pilotos","constructorLeader":"Construtores","latest":"Últimas notícias","featured":"Equipe em destaque"},"news":{"title":"Notícias","subtitle":"Atualizações mock realistas da temporada 2025."},"drivers":{"title":"Pilotos","subtitle":"Todos os 20 pilotos do grid 2025.","number":"Número","nationality":"Nacionalidade","bio":"Bio","career":"Carreira","season":"Temporada 2025","facts":"Curiosidades","starts":"largadas","podiums":"pódios","poles":"poles"},"teams":{"title":"Equipes","subtitle":"As 10 construtoras do grid atual.","history":"História","currentDrivers":"Pilotos atuais","championships":"Títulos de construtores","car":"Carro","base":"Base","curiosities":"Curiosidades"},"calendar":{"title":"Calendário 2025","subtitle":"Corridas, circuitos e status da temporada."},"standings":{"title":"Classificação","subtitle":"Tabela mock do campeonato 2025.","position":"Pos","name":"Nome","points":"Pontos","wins":"Vitórias"},"about":{"title":"Sobre a Central do Grid","subtitle":"Um hub feito para fãs brasileiros acompanharem a F1 com contexto, visual premium e navegação simples.","project":"O projeto organiza dados mock em arquivos separados para facilitar uma futura integração com APIs como OpenF1 ou Ergast.","credits":"Créditos","creditsText":"Central do Grid é um projeto independente de fã. Formula 1, F1 e nomes das equipes pertencem aos seus respectivos proprietários."},"footer":{"disclaimer":"Site independente de fã. Não afiliado à Formula 1, FIA ou equipes.","brand":"Central do Grid"}}
+{
+  "nav": {
+    "home": "Início",
+    "news": "Notícias",
+    "drivers": "Pilotos",
+    "teams": "Equipes",
+    "calendar": "Calendário",
+    "standings": "Classificação",
+    "about": "Sobre"
+  },
+  "common": {
+    "points": "pontos",
+    "wins": "vitórias",
+    "team": "Equipe",
+    "all": "Todas",
+    "readMore": "Ver detalhes",
+    "completed": "Concluída",
+    "next": "Próxima",
+    "upcoming": "Em breve",
+    "days": "dias",
+    "hours": "horas",
+    "minutes": "min",
+    "seconds": "seg",
+    "choose": "Escolher",
+    "favorite": "Time favorito",
+    "drivers": "Pilotos",
+    "constructors": "Construtores",
+    "category": "Categoria"
+  },
+  "modal": {
+    "title": "Escolha sua equipe favorita",
+    "subtitle": "A Central do Grid vai usar as cores dela como tema principal.",
+    "save": "Salvar preferência"
+  },
+  "home": {
+    "kicker": "F1 2025 em tempo real de fã para fã",
+    "title": "Central do Grid",
+    "subtitle": "Notícias, calendário, pilotos, equipes e classificação em uma experiência escura, rápida e colorida pelo seu time.",
+    "nextRace": "Contagem para a próxima corrida",
+    "leaders": "Líderes do campeonato",
+    "driverLeader": "Pilotos",
+    "constructorLeader": "Construtores",
+    "latest": "Últimas notícias",
+    "featured": "Equipe em destaque"
+  },
+  "news": {
+    "title": "Notícias",
+    "subtitle": "Atualizações mock realistas da temporada 2025."
+  },
+  "drivers": {
+    "title": "Pilotos",
+    "subtitle": "Todos os 22 pilotos do grid 2026.",
+    "number": "Número",
+    "nationality": "Nacionalidade",
+    "bio": "Bio",
+    "career": "Carreira",
+    "season": "Temporada 2026",
+    "facts": "Curiosidades",
+    "starts": "largadas",
+    "podiums": "pódios",
+    "poles": "poles"
+  },
+  "teams": {
+    "title": "Equipes",
+    "subtitle": "As 10 construtoras do grid atual.",
+    "history": "História",
+    "currentDrivers": "Pilotos atuais",
+    "championships": "Títulos de construtores",
+    "car": "Carro",
+    "base": "Base",
+    "curiosities": "Curiosidades"
+  },
+  "calendar": {
+    "title": "Calendário 2025",
+    "subtitle": "Corridas, circuitos e status da temporada."
+  },
+  "standings": {
+    "title": "Classificação",
+    "subtitle": "Tabela mock do campeonato 2025.",
+    "position": "Pos",
+    "name": "Nome",
+    "points": "Pontos",
+    "wins": "Vitórias"
+  },
+  "about": {
+    "title": "Sobre a Central do Grid",
+    "subtitle": "Um hub feito para fãs brasileiros acompanharem a F1 com contexto, visual premium e navegação simples.",
+    "project": "O projeto organiza dados mock em arquivos separados para facilitar uma futura integração com APIs como OpenF1 ou Ergast.",
+    "credits": "Créditos",
+    "creditsText": "Central do Grid é um projeto independente de fã. Formula 1, F1 e nomes das equipes pertencem aos seus respectivos proprietários."
+  },
+  "footer": {
+    "disclaimer": "Site independente de fã. Não afiliado à Formula 1, FIA ou equipes.",
+    "brand": "Central do Grid"
+  }
+}
