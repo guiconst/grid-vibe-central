@@ -26,7 +26,7 @@ export function DriverDetail() {
   const facts = driver.facts?.[language] ?? [];
   // 📸 FOTO DO PILOTO: coloque o arquivo em `public/images/drivers/{driver.id}.png`
   //    (ex.: public/images/drivers/antonelli.png) — a imagem aparecerá automaticamente.
-  const photoSrc = `/images/drivers/${driver.id}.png`;
+  const photoSrc = `/images/drivers/${driver.id}.avif`;
 
   // ✍️ BIOGRAFIA DO PILOTO: edite o texto manualmente em `src/data/driverBios.ts`
   //    Adicione uma entrada com o id do piloto (ex.: antonelli: "Texto da bio...").
