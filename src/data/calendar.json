@@ -1,24 +1,222 @@
 [
-  {"id":"australia","name":{"pt":"GP da Austrália","en":"Australian GP"},"circuit":"Albert Park","flag":"🇦🇺","country":{"pt":"Austrália","en":"Australia"},"date":"2026-03-08","status":"completed"},
-  {"id":"china","name":{"pt":"GP da China","en":"Chinese GP"},"circuit":"Shanghai International Circuit","flag":"🇨🇳","country":{"pt":"China","en":"China"},"date":"2026-03-15","status":"completed"},
-  {"id":"japan","name":{"pt":"GP do Japão","en":"Japanese GP"},"circuit":"Suzuka","flag":"🇯🇵","country":{"pt":"Japão","en":"Japan"},"date":"2026-03-29","status":"completed"},
-  {"id":"miami","name":{"pt":"GP de Miami","en":"Miami GP"},"circuit":"Miami International Autodrome","flag":"🇺🇸","country":{"pt":"Estados Unidos","en":"United States"},"date":"2026-05-03","status":"next"},
-  {"id":"canada","name":{"pt":"GP do Canadá","en":"Canadian GP"},"circuit":"Gilles Villeneuve","flag":"🇨🇦","country":{"pt":"Canadá","en":"Canada"},"date":"2026-05-24","status":"upcoming"},
-  {"id":"monaco","name":{"pt":"GP de Mônaco","en":"Monaco GP"},"circuit":"Circuit de Monaco","flag":"🇲🇨","country":{"pt":"Mônaco","en":"Monaco"},"date":"2026-06-07","status":"upcoming"},
-  {"id":"barcelona","name":{"pt":"GP da Espanha","en":"Spanish GP"},"circuit":"Circuit de Barcelona-Catalunya","flag":"🇪🇸","country":{"pt":"Espanha","en":"Spain"},"date":"2026-06-14","status":"upcoming"},
-  {"id":"austria","name":{"pt":"GP da Áustria","en":"Austrian GP"},"circuit":"Red Bull Ring","flag":"🇦🇹","country":{"pt":"Áustria","en":"Austria"},"date":"2026-06-28","status":"upcoming"},
-  {"id":"britain","name":{"pt":"GP da Grã-Bretanha","en":"British GP"},"circuit":"Silverstone","flag":"🇬🇧","country":{"pt":"Reino Unido","en":"United Kingdom"},"date":"2026-07-05","status":"upcoming"},
-  {"id":"belgium","name":{"pt":"GP da Bélgica","en":"Belgian GP"},"circuit":"Spa-Francorchamps","flag":"🇧🇪","country":{"pt":"Bélgica","en":"Belgium"},"date":"2026-07-19","status":"upcoming"},
-  {"id":"hungary","name":{"pt":"GP da Hungria","en":"Hungarian GP"},"circuit":"Hungaroring","flag":"🇭🇺","country":{"pt":"Hungria","en":"Hungary"},"date":"2026-07-26","status":"upcoming"},
-  {"id":"netherlands","name":{"pt":"GP da Holanda","en":"Dutch GP"},"circuit":"Zandvoort","flag":"🇳🇱","country":{"pt":"Holanda","en":"Netherlands"},"date":"2026-08-23","status":"upcoming"},
-  {"id":"italy","name":{"pt":"GP da Itália","en":"Italian GP"},"circuit":"Monza","flag":"🇮🇹","country":{"pt":"Itália","en":"Italy"},"date":"2026-09-06","status":"upcoming"},
-  {"id":"madrid","name":{"pt":"GP de Madrid","en":"Madrid GP"},"circuit":"Circuito de Madrid","flag":"🇪🇸","country":{"pt":"Espanha","en":"Spain"},"date":"2026-09-13","status":"upcoming"},
-  {"id":"azerbaijan","name":{"pt":"GP do Azerbaijão","en":"Azerbaijan GP"},"circuit":"Baku City Circuit","flag":"🇦🇿","country":{"pt":"Azerbaijão","en":"Azerbaijan"},"date":"2026-09-26","status":"upcoming"},
-  {"id":"singapore","name":{"pt":"GP de Singapura","en":"Singapore GP"},"circuit":"Marina Bay Street Circuit","flag":"🇸🇬","country":{"pt":"Singapura","en":"Singapore"},"date":"2026-10-11","status":"upcoming"},
-  {"id":"usa","name":{"pt":"GP dos Estados Unidos","en":"United States GP"},"circuit":"Circuit of the Americas","flag":"🇺🇸","country":{"pt":"Estados Unidos","en":"United States"},"date":"2026-10-25","status":"upcoming"},
-  {"id":"mexico","name":{"pt":"GP do México","en":"Mexico GP"},"circuit":"Autódromo Hermanos Rodríguez","flag":"🇲🇽","country":{"pt":"México","en":"Mexico"},"date":"2026-11-01","status":"upcoming"},
-  {"id":"brazil","name":{"pt":"GP de São Paulo","en":"São Paulo GP"},"circuit":"Interlagos","flag":"🇧🇷","country":{"pt":"Brasil","en":"Brazil"},"date":"2026-11-08","status":"upcoming"},
-  {"id":"lasvegas","name":{"pt":"GP de Las Vegas","en":"Las Vegas GP"},"circuit":"Las Vegas Strip Circuit","flag":"🇺🇸","country":{"pt":"Estados Unidos","en":"United States"},"date":"2026-11-21","status":"upcoming"},
-  {"id":"qatar","name":{"pt":"GP do Qatar","en":"Qatar GP"},"circuit":"Lusail International Circuit","flag":"🇶🇦","country":{"pt":"Qatar","en":"Qatar"},"date":"2026-11-29","status":"upcoming"},
-  {"id":"abudhabi","name":{"pt":"GP de Abu Dhabi","en":"Abu Dhabi GP"},"circuit":"Yas Marina Circuit","flag":"🇦🇪","country":{"pt":"Abu Dhabi","en":"Abu Dhabi"},"date":"2026-12-06","status":"upcoming"}
+  {
+    "id": "australia",
+    "name": {
+      "pt": "GP da Austrália",
+      "en": "Australian GP"
+    },
+    "circuit": "Albert Park",
+    "date": "2026-03-08",
+    "status": "completed"
+  },
+  {
+    "id": "china",
+    "name": {
+      "pt": "GP da China",
+      "en": "Chinese GP"
+    },
+    "circuit": "Shanghai International Circuit",
+    "date": "2026-03-15",
+    "status": "completed"
+  },
+  {
+    "id": "japan",
+    "name": {
+      "pt": "GP do Japão",
+      "en": "Japanese GP"
+    },
+    "circuit": "Suzuka",
+    "date": "2026-03-29",
+    "status": "completed"
+  },
+  {
+    "id": "miami",
+    "name": {
+      "pt": "GP de Miami",
+      "en": "Miami GP"
+    },
+    "circuit": "Miami International Autodrome",
+    "date": "2026-05-03",
+    "status": "next"
+  },
+  {
+    "id": "canada",
+    "name": {
+      "pt": "GP do Canadá",
+      "en": "Canadian GP"
+    },
+    "circuit": "Gilles Villeneuve",
+    "date": "2026-05-24",
+    "status": "upcoming"
+  },
+  {
+    "id": "monaco",
+    "name": {
+      "pt": "GP de Mônaco",
+      "en": "Monaco GP"
+    },
+    "circuit": "Circuit de Monaco",
+    "date": "2026-06-07",
+    "status": "upcoming"
+  },
+  {
+    "id": "barcelona",
+    "name": {
+      "pt": "GP da Espanha",
+      "en": "Spanish GP"
+    },
+    "circuit": "Circuit de Barcelona-Catalunya",
+    "date": "2026-06-14",
+    "status": "upcoming"
+  },
+  {
+    "id": "austria",
+    "name": {
+      "pt": "GP da Áustria",
+      "en": "Austrian GP"
+    },
+    "circuit": "Red Bull Ring",
+    "date": "2026-06-28",
+    "status": "upcoming"
+  },
+  {
+    "id": "britain",
+    "name": {
+      "pt": "GP da Grã-Bretanha",
+      "en": "British GP"
+    },
+    "circuit": "Silverstone",
+    "date": "2026-07-05",
+    "status": "upcoming"
+  },
+  {
+    "id": "belgium",
+    "name": {
+      "pt": "GP da Bélgica",
+      "en": "Belgian GP"
+    },
+    "circuit": "Spa-Francorchamps",
+    "date": "2026-07-19",
+    "status": "upcoming"
+  },
+  {
+    "id": "hungary",
+    "name": {
+      "pt": "GP da Hungria",
+      "en": "Hungarian GP"
+    },
+    "circuit": "Hungaroring",
+    "date": "2026-07-26",
+    "status": "upcoming"
+  },
+  {
+    "id": "netherlands",
+    "name": {
+      "pt": "GP da Holanda",
+      "en": "Dutch GP"
+    },
+    "circuit": "Zandvoort",
+    "date": "2026-08-23",
+    "status": "upcoming"
+  },
+  {
+    "id": "italy",
+    "name": {
+      "pt": "GP da Itália",
+      "en": "Italian GP"
+    },
+    "circuit": "Monza",
+    "date": "2026-09-06",
+    "status": "upcoming"
+  },
+  {
+    "id": "madrid",
+    "name": {
+      "pt": "GP de Madrid",
+      "en": "Madrid GP"
+    },
+    "circuit": "Circuito de Madrid",
+    "date": "2026-09-13",
+    "status": "upcoming"
+  },
+  {
+    "id": "azerbaijan",
+    "name": {
+      "pt": "GP do Azerbaijão",
+      "en": "Azerbaijan GP"
+    },
+    "circuit": "Baku City Circuit",
+    "date": "2026-09-26",
+    "status": "upcoming"
+  },
+  {
+    "id": "singapore",
+    "name": {
+      "pt": "GP de Singapura",
+      "en": "Singapore GP"
+    },
+    "circuit": "Marina Bay Street Circuit",
+    "date": "2026-10-11",
+    "status": "upcoming"
+  },
+  {
+    "id": "usa",
+    "name": {
+      "pt": "GP dos Estados Unidos",
+      "en": "United States GP"
+    },
+    "circuit": "Circuit of the Americas",
+    "date": "2026-10-25",
+    "status": "upcoming"
+  },
+  {
+    "id": "mexico",
+    "name": {
+      "pt": "GP do México",
+      "en": "Mexico GP"
+    },
+    "circuit": "Autódromo Hermanos Rodríguez",
+    "date": "2026-11-01",
+    "status": "upcoming"
+  },
+  {
+    "id": "brazil",
+    "name": {
+      "pt": "GP de São Paulo",
+      "en": "São Paulo GP"
+    },
+    "circuit": "Interlagos",
+    "date": "2026-11-08",
+    "status": "upcoming"
+  },
+  {
+    "id": "lasvegas",
+    "name": {
+      "pt": "GP de Las Vegas",
+      "en": "Las Vegas GP"
+    },
+    "circuit": "Las Vegas Strip Circuit",
+    "date": "2026-11-21",
+    "status": "upcoming"
+  },
+  {
+    "id": "qatar",
+    "name": {
+      "pt": "GP do Qatar",
+      "en": "Qatar GP"
+    },
+    "circuit": "Lusail International Circuit",
+    "date": "2026-11-29",
+    "status": "upcoming"
+  },
+  {
+    "id": "abudhabi",
+    "name": {
+      "pt": "GP de Abu Dhabi",
+      "en": "Abu Dhabi GP"
+    },
+    "circuit": "Yas Marina Circuit",
+    "date": "2026-12-06",
+    "status": "upcoming"
+  }
 ]
