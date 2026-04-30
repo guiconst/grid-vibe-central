@@ -1,4 +1,4 @@
-import { Menu, X, Trophy, Languages } from "lucide-react";
+import { Menu, X, Languages } from "lucide-react";
 import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -26,11 +26,13 @@ export function GridShell() {
       <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_50%_0%,hsl(var(--team-primary)/0.26),transparent_32rem),linear-gradient(120deg,hsl(var(--team-secondary)/0.10),transparent_32%)]" />
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/82 backdrop-blur-xl">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-          <NavLink to="/" className="group flex items-center gap-3" onClick={() => setMenuOpen(false)}>
-            <span className="grid h-10 w-10 place-items-center rounded-lg bg-primary text-primary-foreground shadow-glow transition-transform group-hover:-translate-y-0.5">
-              <Trophy className="h-5 w-5" />
-            </span>
-            <span className="font-display text-lg font-black tracking-wide">Central do Grid</span>
+          <NavLink to="/" className="group flex items-center gap-2 sm:gap-3" onClick={() => setMenuOpen(false)}>
+            <img
+              src="/images/logo.png"
+              alt="Central do Grid"
+              className="h-9 w-9 sm:h-10 sm:w-10 rounded-lg object-contain bg-primary p-1 shadow-glow transition-transform group-hover:-translate-y-0.5"
+            />
+            <span className="font-display text-base sm:text-lg font-black tracking-wide leading-tight">Central do Grid</span>
           </NavLink>
           <div className="hidden items-center gap-1 lg:flex">
             {navItems.map(([href, key]) => (
@@ -73,19 +75,21 @@ export function GridShell() {
         </div>
       </footer>
       <Dialog open={showFavoriteModal} onOpenChange={setShowFavoriteModal}>
-        <DialogContent className="border-border bg-card text-card-foreground sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="font-display text-3xl">{t.modal.title}</DialogTitle>
-            <DialogDescription>{t.modal.subtitle}</DialogDescription>
+        <DialogContent className="border-border bg-card text-card-foreground w-[calc(100vw-2rem)] max-w-2xl rounded-xl p-0 gap-0 overflow-hidden flex flex-col max-h-[90vh]">
+          <DialogHeader className="px-5 pt-5 pb-4 border-b border-border shrink-0">
+            <DialogTitle className="font-display text-2xl sm:text-3xl">{t.modal.title}</DialogTitle>
+            <DialogDescription className="text-sm">{t.modal.subtitle}</DialogDescription>
           </DialogHeader>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {teams.map((team) => (
-              <button key={team.id} onClick={() => saveFavoriteTeam(team.id)} className={cn("group rounded-lg border border-border bg-muted/50 p-4 text-left transition-grid-theme hover:-translate-y-1 hover:border-primary", activeTeam.id === team.id && "border-primary bg-accent") }>
-                <span className="mb-3 block h-2 rounded-full" style={{ background: `linear-gradient(90deg, hsl(${team.primary}), hsl(${team.secondary}))` }} />
-                <span className="block font-display text-xl font-bold">{team.name}</span>
-                <span className="text-sm text-muted-foreground">{team.fullName}</span>
-              </button>
-            ))}
+          <div className="overflow-y-auto flex-1 p-5">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {teams.map((team) => (
+                <button key={team.id} onClick={() => saveFavoriteTeam(team.id)} className={cn("group rounded-lg border border-border bg-muted/50 p-4 text-left transition-grid-theme hover:-translate-y-1 hover:border-primary active:scale-95", activeTeam.id === team.id && "border-primary bg-accent") }>
+                  <span className="mb-3 block h-2 rounded-full" style={{ background: `linear-gradient(90deg, hsl(${team.primary}), hsl(${team.secondary}))` }} />
+                  <span className="block font-display text-lg sm:text-xl font-bold">{team.name}</span>
+                  <span className="text-sm text-muted-foreground">{team.fullName}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </DialogContent>
       </Dialog>
