@@ -10,7 +10,9 @@ export function NewsCard({ item }: { item: NewsItem }) {
   return (
     <article className="group overflow-hidden rounded-lg border border-border bg-card shadow-card transition-grid-theme hover:-translate-y-1 hover:border-primary/50">
       <div className="h-32 bg-[linear-gradient(135deg,hsl(var(--team-primary)/0.22),hsl(var(--muted)))] p-4">
-        <span className="rounded-full bg-primary px-3 py-1 text-xs font-black text-primary-foreground">{item.category}</span>
+        {item.category && (
+          <span className="rounded-full bg-primary px-3 py-1 text-xs font-black text-primary-foreground">{item.category}</span>
+        )}
       </div>
       <div className="p-5">
         <div className="mb-2 text-xs text-muted-foreground">{new Date(`${item.date}T12:00:00`).toLocaleDateString(language === "pt" ? "pt-BR" : "en-GB")} · {team.name}</div>
