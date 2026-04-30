@@ -13,6 +13,13 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        display: ["Arial", "ui-sans-serif", "system-ui", "sans-serif"],
+      },
+      boxShadow: {
+        card: "0 18px 50px -28px hsl(var(--team-primary) / 0.55)",
+        glow: "0 0 28px hsl(var(--team-primary) / 0.35)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -80,10 +87,15 @@ export default {
             height: "0",
           },
         },
+        "route-in": {
+          from: { opacity: "0", transform: "translateY(10px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "route-in": "route-in 0.35s ease-out both",
       },
     },
   },
