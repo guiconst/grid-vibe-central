@@ -21,5 +21,40 @@ export function DriverDetail() {
     setThemeTeam(team.id);
     return () => setThemeTeam(favoriteTeam.id);
   }, [team.id, favoriteTeam.id, setThemeTeam]);
-  return <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8"><div className="rounded-lg border border-border bg-card p-6 shadow-card"><div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-primary">{team.name} · {driver.flag} {driver.nationality[language]}</p><h1 className="font-display text-5xl font-black">{driver.name}</h1></div><div className="grid h-28 w-28 place-items-center rounded-lg bg-muted font-display text-5xl font-black text-primary">#{driver.number}</div></div><p className="mt-6 text-lg text-muted-foreground">{driver.bio[language]}</p><div className="mt-8 grid gap-3 sm:grid-cols-4"><StatPill label={t.drivers.starts} value={driver.stats.starts} /><StatPill label={t.common.wins} value={driver.stats.wins} /><StatPill label={t.drivers.podiums} value={driver.stats.podiums} /><StatPill label={t.drivers.poles} value={driver.stats.poles} /></div><h2 className="mt-10 font-display text-3xl font-bold">{t.drivers.season}</h2><div className="mt-4 grid gap-3 sm:grid-cols-3"><StatPill label={t.common.points} value={driver.season.points} /><StatPill label={t.common.wins} value={driver.season.wins} /><StatPill label={t.drivers.podiums} value={driver.season.podiums} /></div><h2 className="mt-10 font-display text-3xl font-bold">{t.drivers.facts}</h2><ul className="mt-4 grid gap-3">{driver.facts[language].map((fact) => <li key={fact} className="rounded-md bg-muted p-4 text-muted-foreground">{fact}</li>)}</ul></div></section>;
+  const bio = driver.bio?.[language];
+  const facts = driver.facts?.[language] ?? [];
+  return (
+    <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="rounded-lg border border-border bg-card p-6 shadow-card">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-primary">{team.name}</p>
+            <h1 className="font-display text-5xl font-black">{driver.name}</h1>
+          </div>
+          <div className="grid h-28 w-28 place-items-center rounded-lg bg-muted font-display text-5xl font-black text-primary">#{driver.number}</div>
+        </div>
+        {bio && <p className="mt-6 text-lg text-muted-foreground">{bio}</p>}
+        <div className="mt-8 grid gap-3 sm:grid-cols-4">
+          <StatPill label={t.drivers.starts} value={driver.stats.starts} />
+          <StatPill label={t.common.wins} value={driver.stats.wins} />
+          <StatPill label={t.drivers.podiums} value={driver.stats.podiums} />
+          <StatPill label={t.drivers.poles} value={driver.stats.poles} />
+        </div>
+        <h2 className="mt-10 font-display text-3xl font-bold">{t.drivers.season}</h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <StatPill label={t.common.points} value={driver.season.points} />
+          <StatPill label={t.common.wins} value={driver.season.wins ?? 0} />
+          <StatPill label={t.drivers.podiums} value={driver.season.podiums ?? 0} />
+        </div>
+        {facts.length > 0 && (
+          <>
+            <h2 className="mt-10 font-display text-3xl font-bold">{t.drivers.facts}</h2>
+            <ul className="mt-4 grid gap-3">
+              {facts.map((fact) => <li key={fact} className="rounded-md bg-muted p-4 text-muted-foreground">{fact}</li>)}
+            </ul>
+          </>
+        )}
+      </div>
+    </section>
+  );
 }
