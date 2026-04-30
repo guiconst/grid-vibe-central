@@ -43,34 +43,37 @@ export function DriverDetail() {
           <div className="grid h-28 w-28 place-items-center rounded-lg bg-muted font-display text-5xl font-black text-primary">#{driver.number}</div>
         </div>
 
-        {/* Espaço para foto do piloto */}
-        <div
-          className="mt-6 overflow-hidden rounded-xl border border-border"
-          style={{ background: `linear-gradient(135deg, hsl(${team.primary} / 0.15), #18181b 60%)` }}
-        >
-          <img
-            src={photoSrc}
-            alt={driver.name}
-            className="mx-auto block max-h-96 w-full object-contain object-center"
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).style.display = "none";
-            }}
-          />
-        </div>
+        {/* Foto + Biografia lado a lado */}
+        <div className="mt-6 grid gap-6 lg:grid-cols-[auto_1fr] lg:items-start">
+          {/* Foto — largura fixa, altura se ajusta à imagem */}
+          <div
+            className="overflow-hidden rounded-xl border border-border lg:w-64"
+            style={{ background: `linear-gradient(135deg, hsl(${team.primary} / 0.15), #18181b 60%)` }}
+          >
+            <img
+              src={photoSrc}
+              alt={driver.name}
+              className="block w-full object-contain"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).closest("div")!.style.display = "none";
+              }}
+            />
+          </div>
 
-        {/* Biografia manual */}
-        <div className="mt-6 rounded-xl border border-border bg-muted/40 p-5">
-          <h2 className="font-display text-2xl font-bold">{language === "pt" ? "Biografia" : "Biography"}</h2>
-          {manualBio ? (
-            <p className="mt-3 whitespace-pre-line text-muted-foreground">{manualBio}</p>
-          ) : (
-            <p className="mt-3 text-sm text-muted-foreground">
-              ✍️ {language === "pt" ? "Edite manualmente em" : "Edit manually in"}{" "}
-              <code className="rounded bg-background px-1.5 py-0.5">src/data/driverBios.ts</code>{" "}
-              {language === "pt" ? "adicionando a chave" : "adding the key"}{" "}
-              <code className="rounded bg-background px-1.5 py-0.5">{driver.id}</code>.
-            </p>
-          )}
+          {/* Biografia */}
+          <div className="rounded-xl border border-border bg-muted/40 p-5 h-full">
+            <h2 className="font-display text-2xl font-bold">{language === "pt" ? "Biografia" : "Biography"}</h2>
+            {manualBio ? (
+              <p className="mt-3 whitespace-pre-line text-muted-foreground">{manualBio}</p>
+            ) : (
+              <p className="mt-3 text-sm text-muted-foreground">
+                ✍️ {language === "pt" ? "Edite manualmente em" : "Edit manually in"}{" "}
+                <code className="rounded bg-background px-1.5 py-0.5">src/data/driverBios.ts</code>{" "}
+                {language === "pt" ? "adicionando a chave" : "adding the key"}{" "}
+                <code className="rounded bg-background px-1.5 py-0.5">{driver.id}</code>.
+              </p>
+            )}
+          </div>
         </div>
 
         {bio && <p className="mt-6 text-lg text-muted-foreground">{bio}</p>}
