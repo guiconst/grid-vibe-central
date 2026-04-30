@@ -45,7 +45,7 @@
   },
   "news": {
     "title": "Notícias",
-    "subtitle": "Atualizações mock realistas da temporada 2025."
+    "subtitle": ""
   },
   "drivers": {
     "title": "Pilotos",
@@ -62,7 +62,7 @@
   },
   "teams": {
     "title": "Equipes",
-    "subtitle": "As 10 construtoras do grid atual.",
+    "subtitle": "As 11 construtoras do grid atual.",
     "history": "História",
     "currentDrivers": "Pilotos atuais",
     "championships": "Títulos de construtores",
@@ -71,7 +71,7 @@
     "curiosities": "Curiosidades"
   },
   "calendar": {
-    "title": "Calendário 2025",
+    "title": "Calendário 2026",
     "subtitle": "Corridas, circuitos e status da temporada."
   },
   "standings": {

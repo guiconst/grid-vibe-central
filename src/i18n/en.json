@@ -45,7 +45,7 @@
   },
   "news": {
     "title": "News",
-    "subtitle": "Realistic mock updates from the 2025 season."
+    "subtitle": ""
   },
   "drivers": {
     "title": "Drivers",
@@ -62,7 +62,7 @@
   },
   "teams": {
     "title": "Teams",
-    "subtitle": "The 10 constructors on the current grid.",
+    "subtitle": "The 11 constructors on the current grid.",
     "history": "History",
     "currentDrivers": "Current drivers",
     "championships": "Constructors' titles",
@@ -71,7 +71,7 @@
     "curiosities": "Curiosities"
   },
   "calendar": {
-    "title": "2025 Calendar",
+    "title": "2026 Calendar",
     "subtitle": "Races, circuits, and season status."
   },
   "standings": {
