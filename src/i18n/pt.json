@@ -76,7 +76,7 @@
   },
   "standings": {
     "title": "Classificação",
-    "subtitle": "Tabela mock do campeonato 2025.",
+    "subtitle": "",
     "position": "Pos",
     "name": "Nome",
     "points": "Pontos",
