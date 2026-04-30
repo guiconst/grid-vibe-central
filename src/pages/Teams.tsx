@@ -129,14 +129,28 @@ export function TeamDetail() {
         <p className="mt-2 text-sm text-white/40">{language === "pt" ? "Em breve — dados atuais da temporada serão adicionados aqui." : "Coming soon — current season data will be added here."}</p>
       </div>
 
-      {/* Foto do carro — reservado */}
-      <div className="mt-6 rounded-2xl border border-dashed border-white/20 bg-zinc-900/50 p-6">
-        <h2 className="font-display text-2xl font-bold">{language === "pt" ? `Carro — ${team.car}` : `Car — ${team.car}`}</h2>
+      {/* Foto do carro */}
+      <div className="mt-6 rounded-2xl border border-white/10 bg-zinc-900 overflow-hidden">
+        <div className="px-6 pt-5 pb-3">
+          <h2 className="font-display text-2xl font-bold">{language === "pt" ? `Carro — ${team.car}` : `Car — ${team.car}`}</h2>
+        </div>
         <div
-          className="mt-4 flex h-48 items-center justify-center rounded-xl border border-white/10 bg-zinc-800"
-          style={{ background: `linear-gradient(135deg, ${primaryColor}11, #18181b)` }}
+          className="relative flex items-center justify-center"
+          style={{ background: `linear-gradient(135deg, ${primaryColor}18, #18181b 60%)` }}
         >
-          <p className="text-sm text-white/30">{language === "pt" ? "Foto do carro em breve" : "Car photo coming soon"}</p>
+          <img
+            src={`/images/teams/cars/${team.id}.avif`}
+            alt={team.car}
+            className="w-full max-h-72 object-contain py-4 px-6 drop-shadow-2xl"
+            onError={(e) => {
+              const img = e.currentTarget;
+              img.style.display = "none";
+              img.parentElement?.querySelector("[data-car-placeholder]")?.removeAttribute("hidden");
+            }}
+          />
+          <p data-car-placeholder hidden className="py-12 text-sm text-white/30">
+            {language === "pt" ? "Foto do carro não encontrada" : "Car photo not found"}
+          </p>
         </div>
       </div>
 
@@ -154,12 +168,24 @@ export function TeamDetail() {
                 className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                 style={{ background: `radial-gradient(circle at top left, ${primaryColor}22, transparent 60%)` }}
               />
-              {/* Espaço reservado para foto do piloto */}
+              {/* Foto do piloto */}
               <div
-                className="mb-4 flex h-32 items-center justify-center rounded-xl border border-dashed border-white/10"
-                style={{ background: `linear-gradient(135deg, ${primaryColor}11, #18181b)` }}
+                className="mb-4 h-36 overflow-hidden rounded-xl border border-white/10 relative"
+                style={{ background: `linear-gradient(135deg, ${primaryColor}18, #18181b)` }}
               >
-                <p className="text-xs text-white/30">{language === "pt" ? "Foto em breve" : "Photo coming soon"}</p>
+                <img
+                  src={`/images/drivers/${driver.id}.avif`}
+                  alt={driver.name}
+                  className="h-full w-full object-cover object-top"
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    img.style.display = "none";
+                    img.parentElement?.querySelector("[data-driver-placeholder]")?.removeAttribute("hidden");
+                  }}
+                />
+                <p data-driver-placeholder hidden className="absolute inset-0 flex items-center justify-center text-xs text-white/30">
+                  #{driver.number}
+                </p>
               </div>
               <div className="relative z-10">
                 <p className="text-2xl font-black text-white">{driver.name}</p>
