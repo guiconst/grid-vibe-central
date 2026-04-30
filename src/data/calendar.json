@@ -1,0 +1,13 @@
+[
+  {"id":"australia","name":{"pt":"GP da Austrália","en":"Australian GP"},"circuit":"Albert Park","flag":"🇦🇺","country":{"pt":"Austrália","en":"Australia"},"date":"2025-03-16","status":"completed"},
+  {"id":"china","name":{"pt":"GP da China","en":"Chinese GP"},"circuit":"Shanghai International Circuit","flag":"🇨🇳","country":{"pt":"China","en":"China"},"date":"2025-03-23","status":"completed"},
+  {"id":"japan","name":{"pt":"GP do Japão","en":"Japanese GP"},"circuit":"Suzuka","flag":"🇯🇵","country":{"pt":"Japão","en":"Japan"},"date":"2025-04-06","status":"completed"},
+  {"id":"bahrain","name":{"pt":"GP do Bahrein","en":"Bahrain GP"},"circuit":"Sakhir","flag":"🇧🇭","country":{"pt":"Bahrein","en":"Bahrain"},"date":"2025-04-13","status":"completed"},
+  {"id":"saudi","name":{"pt":"GP da Arábia Saudita","en":"Saudi Arabian GP"},"circuit":"Jeddah Corniche Circuit","flag":"🇸🇦","country":{"pt":"Arábia Saudita","en":"Saudi Arabia"},"date":"2025-04-20","status":"completed"},
+  {"id":"miami","name":{"pt":"GP de Miami","en":"Miami GP"},"circuit":"Miami International Autodrome","flag":"🇺🇸","country":{"pt":"Estados Unidos","en":"United States"},"date":"2025-05-04","status":"next"},
+  {"id":"emilia","name":{"pt":"GP da Emília-Romanha","en":"Emilia Romagna GP"},"circuit":"Imola","flag":"🇮🇹","country":{"pt":"Itália","en":"Italy"},"date":"2025-05-18","status":"upcoming"},
+  {"id":"monaco","name":{"pt":"GP de Mônaco","en":"Monaco GP"},"circuit":"Circuit de Monaco","flag":"🇲🇨","country":{"pt":"Mônaco","en":"Monaco"},"date":"2025-05-25","status":"upcoming"},
+  {"id":"canada","name":{"pt":"GP do Canadá","en":"Canadian GP"},"circuit":"Gilles Villeneuve","flag":"🇨🇦","country":{"pt":"Canadá","en":"Canada"},"date":"2025-06-15","status":"upcoming"},
+  {"id":"britain","name":{"pt":"GP da Grã-Bretanha","en":"British GP"},"circuit":"Silverstone","flag":"🇬🇧","country":{"pt":"Reino Unido","en":"United Kingdom"},"date":"2025-07-06","status":"upcoming"},
+  {"id":"brazil","name":{"pt":"GP de São Paulo","en":"São Paulo GP"},"circuit":"Interlagos","flag":"🇧🇷","country":{"pt":"Brasil","en":"Brazil"},"date":"2025-11-09","status":"upcoming"}
+]
