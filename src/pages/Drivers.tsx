@@ -4,6 +4,7 @@ import { DriverCard, StatPill } from "@/components/grid/Cards";
 import { Button } from "@/components/ui/button";
 import { useGrid } from "@/context/GridContext";
 import { driverById, drivers, teamById } from "@/lib/gridData";
+import driverBios from "@/data/driverBios";
 
 export default function Drivers() {
   const { t, teams, setThemeTeam } = useGrid();
@@ -23,6 +24,14 @@ export function DriverDetail() {
   }, [team.id, favoriteTeam.id, setThemeTeam]);
   const bio = driver.bio?.[language];
   const facts = driver.facts?.[language] ?? [];
+  // 📸 FOTO DO PILOTO: coloque o arquivo em `public/images/drivers/{driver.id}.png`
+  //    (ex.: public/images/drivers/antonelli.png) — a imagem aparecerá automaticamente.
+  const photoSrc = `/images/drivers/${driver.id}.png`;
+
+  // ✍️ BIOGRAFIA DO PILOTO: edite o texto manualmente em `src/data/driverBios.ts`
+  //    Adicione uma entrada com o id do piloto (ex.: antonelli: "Texto da bio...").
+  const manualBio = (driverBios as Record<string, string | undefined>)[driver.id];
+
   return (
     <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="rounded-lg border border-border bg-card p-6 shadow-card">
@@ -33,6 +42,41 @@ export function DriverDetail() {
           </div>
           <div className="grid h-28 w-28 place-items-center rounded-lg bg-muted font-display text-5xl font-black text-primary">#{driver.number}</div>
         </div>
+
+        {/* Espaço para foto do piloto */}
+        <div className="mt-6 overflow-hidden rounded-xl border border-dashed border-border bg-muted">
+          <div className="flex aspect-[16/9] items-center justify-center">
+            <img
+              src={photoSrc}
+              alt={driver.name}
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                const img = e.currentTarget;
+                img.style.display = "none";
+                img.parentElement?.parentElement?.querySelector("[data-photo-placeholder]")?.removeAttribute("hidden");
+              }}
+            />
+          </div>
+          <div data-photo-placeholder hidden className="p-6 text-center text-sm text-muted-foreground">
+            📸 Adicione a foto em <code className="rounded bg-background px-1.5 py-0.5">public/images/drivers/{driver.id}.png</code>
+          </div>
+        </div>
+
+        {/* Biografia manual */}
+        <div className="mt-6 rounded-xl border border-border bg-muted/40 p-5">
+          <h2 className="font-display text-2xl font-bold">{language === "pt" ? "Biografia" : "Biography"}</h2>
+          {manualBio ? (
+            <p className="mt-3 whitespace-pre-line text-muted-foreground">{manualBio}</p>
+          ) : (
+            <p className="mt-3 text-sm text-muted-foreground">
+              ✍️ {language === "pt" ? "Edite manualmente em" : "Edit manually in"}{" "}
+              <code className="rounded bg-background px-1.5 py-0.5">src/data/driverBios.ts</code>{" "}
+              {language === "pt" ? "adicionando a chave" : "adding the key"}{" "}
+              <code className="rounded bg-background px-1.5 py-0.5">{driver.id}</code>.
+            </p>
+          )}
+        </div>
+
         {bio && <p className="mt-6 text-lg text-muted-foreground">{bio}</p>}
         <div className="mt-8 grid gap-3 sm:grid-cols-4">
           <StatPill label={t.drivers.starts} value={driver.stats.starts} />
