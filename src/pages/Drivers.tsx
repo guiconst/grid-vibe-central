@@ -4,6 +4,7 @@ import { DriverCard, StatPill } from "@/components/grid/Cards";
 import { Button } from "@/components/ui/button";
 import { useGrid } from "@/context/GridContext";
 import { driverById, drivers, teamById } from "@/lib/gridData";
+import driverBios from "@/data/driverBios";
 
 export default function Drivers() {
   const { t, teams, setThemeTeam } = useGrid();
