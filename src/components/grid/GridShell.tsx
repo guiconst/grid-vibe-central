@@ -43,7 +43,7 @@ export function GridShell() {
           </div>
           <div className="hidden items-center gap-2 lg:flex">
             <Button variant="soft" size="sm" onClick={() => setShowFavoriteModal(true)}>{favoriteTeam.name}</Button>
-            <Button variant="ghost" size="sm" onClick={() => setLanguage(language === "pt" ? "en" : "pt")}><Languages className="h-4 w-4" /> {language === "pt" ? "EN 🇬🇧" : "PT 🇧🇷"}</Button>
+            <Button variant="ghost" size="sm" onClick={() => setLanguage(language === "pt" ? "en" : "pt")}><Languages className="h-4 w-4" /> {language === "pt" ? "EN-US" : "PT-BR"}</Button>
           </div>
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMenuOpen((open) => !open)} aria-label="Menu">
             {menuOpen ? <X /> : <Menu />}
@@ -59,7 +59,7 @@ export function GridShell() {
               ))}
               <div className="mt-2 flex gap-2">
                 <Button variant="soft" className="flex-1" onClick={() => setShowFavoriteModal(true)}>{favoriteTeam.name}</Button>
-                <Button variant="outline" onClick={() => setLanguage(language === "pt" ? "en" : "pt")}>{language === "pt" ? "EN" : "PT"}</Button>
+                <Button variant="outline" onClick={() => setLanguage(language === "pt" ? "en" : "pt")}>{language === "pt" ? "EN-US" : "PT-BR"}</Button>
               </div>
             </div>
           </div>
