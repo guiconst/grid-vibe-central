@@ -35,7 +35,7 @@ export function TeamCard({ team, onActivate }: { team: Team; onActivate?: () => 
 }
 
 export function DriverCard({ driver, team, onActivate }: { driver: Driver; team: Team; onActivate?: () => void }) {
-  const { t } = useGrid();
+  const { t, language } = useGrid();
   return (
     <Link to={`/pilotos/${driver.id}`} onClick={onActivate} className="group rounded-lg border border-border bg-card p-5 shadow-card transition-grid-theme hover:-translate-y-1 hover:border-primary/50">
       <div className="flex items-start justify-between">
@@ -43,7 +43,7 @@ export function DriverCard({ driver, team, onActivate }: { driver: Driver; team:
         <span className="text-3xl">{driver.flag}</span>
       </div>
       <h3 className="mt-5 font-display text-2xl font-black leading-tight">{driver.name}</h3>
-      <p className="mt-1 text-sm text-muted-foreground">{team.name} · {driver.nationality.pt}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{team.name} · {driver.nationality[language]}</p>
       <Button variant="link" className="mt-4 h-auto p-0">{t.common.readMore}<ArrowRight /></Button>
     </Link>
   );
