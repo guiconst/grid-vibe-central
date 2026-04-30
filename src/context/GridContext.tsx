@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import teams from "@/data/teams.json";
 import pt from "@/i18n/pt.json";
 import en from "@/i18n/en.json";
@@ -22,7 +22,7 @@ type GridContextValue = {
 const DEFAULT_TEAM = "red-bull";
 const GridContext = createContext<GridContextValue | null>(null);
 
-export function GridProvider({ children }: { children: React.ReactNode }) {
+export function GridProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => (localStorage.getItem("cdg-language") as Language) || "pt");
   const [favoriteTeamId, setFavoriteTeamId] = useState(() => localStorage.getItem("cdg-favorite-team") || DEFAULT_TEAM);
   const [activeTeamId, setActiveTeamId] = useState(() => localStorage.getItem("cdg-active-team") || favoriteTeamId || DEFAULT_TEAM);
