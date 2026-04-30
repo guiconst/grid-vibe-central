@@ -44,22 +44,18 @@ export function DriverDetail() {
         </div>
 
         {/* Espaço para foto do piloto */}
-        <div className="mt-6 overflow-hidden rounded-xl border border-dashed border-border bg-muted">
-          <div className="flex aspect-[16/9] items-center justify-center">
-            <img
-              src={photoSrc}
-              alt={driver.name}
-              className="h-full w-full object-cover"
-              onError={(e) => {
-                const img = e.currentTarget;
-                img.style.display = "none";
-                img.parentElement?.parentElement?.querySelector("[data-photo-placeholder]")?.removeAttribute("hidden");
-              }}
-            />
-          </div>
-          <div data-photo-placeholder hidden className="p-6 text-center text-sm text-muted-foreground">
-            📸 Adicione a foto em <code className="rounded bg-background px-1.5 py-0.5">public/images/drivers/{driver.id}.png</code>
-          </div>
+        <div
+          className="mt-6 overflow-hidden rounded-xl border border-border"
+          style={{ background: `linear-gradient(135deg, hsl(${team.primary} / 0.15), #18181b 60%)` }}
+        >
+          <img
+            src={photoSrc}
+            alt={driver.name}
+            className="mx-auto block max-h-96 w-full object-contain object-center"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = "none";
+            }}
+          />
         </div>
 
         {/* Biografia manual */}

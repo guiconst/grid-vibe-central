@@ -170,22 +170,17 @@ export function TeamDetail() {
               />
               {/* Foto do piloto */}
               <div
-                className="mb-4 h-36 overflow-hidden rounded-xl border border-white/10 relative"
+                className="mb-4 h-48 overflow-hidden rounded-xl border border-white/10 relative flex items-center justify-center"
                 style={{ background: `linear-gradient(135deg, ${primaryColor}18, #18181b)` }}
               >
                 <img
                   src={`/images/drivers/${driver.id}.avif`}
                   alt={driver.name}
-                  className="h-full w-full object-cover object-top"
+                  className="h-full w-full object-contain object-center"
                   onError={(e) => {
-                    const img = e.currentTarget;
-                    img.style.display = "none";
-                    img.parentElement?.querySelector("[data-driver-placeholder]")?.removeAttribute("hidden");
+                    (e.currentTarget as HTMLImageElement).style.display = "none";
                   }}
                 />
-                <p data-driver-placeholder hidden className="absolute inset-0 flex items-center justify-center text-xs text-white/30">
-                  #{driver.number}
-                </p>
               </div>
               <div className="relative z-10">
                 <p className="text-2xl font-black text-white">{driver.name}</p>
