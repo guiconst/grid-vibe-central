@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { StatPill } from "@/components/grid/Cards";
+
 import { useGrid } from "@/context/GridContext";
 import { driversByTeam, teamById } from "@/lib/gridData";
 
@@ -113,14 +113,78 @@ export function TeamDetail() {
         <p className="relative z-10 mt-6 text-lg text-white/70">{team.history[language]}</p>
       </div>
 
-      {/* Stats históricos */}
+      {/* Títulos mundiais */}
       <div className="mt-6">
-        <h2 className="mb-4 font-display text-2xl font-bold">{t.teams.championships} & {t.teams.car}</h2>
-        <div className="grid gap-3 sm:grid-cols-3">
-          <StatPill label={t.teams.championships} value={team.championships} />
-          <StatPill label={t.teams.car} value={team.car} />
-          <StatPill label={t.teams.base} value={team.base} />
-        </div>
+        {team.championships > 0 ? (
+          <div
+            className="relative overflow-hidden rounded-2xl p-6"
+            style={{
+              background: "linear-gradient(135deg, #2a1f00 0%, #1a1200 40%, #2a1f00 100%)",
+              border: "1px solid #b8860b88",
+              boxShadow: "0 0 32px #b8860b44, 0 0 8px #ffd70033, inset 0 1px 0 #ffd70044",
+            }}
+          >
+            {/* Brilho animado */}
+            <div
+              className="pointer-events-none absolute inset-0 rounded-2xl"
+              style={{
+                background: "linear-gradient(105deg, transparent 40%, rgba(255,215,0,0.08) 50%, transparent 60%)",
+                animation: "shimmer 3s infinite linear",
+              }}
+            />
+            <style>{`
+              @keyframes shimmer {
+                0% { transform: translateX(-100%); }
+                100% { transform: translateX(200%); }
+              }
+            `}</style>
+            {/* Partículas decorativas */}
+            <div className="pointer-events-none absolute top-3 right-6 text-2xl opacity-60 select-none">★</div>
+            <div className="pointer-events-none absolute bottom-3 left-6 text-lg opacity-30 select-none">✦</div>
+            <div className="relative z-10 flex items-center gap-4">
+              <div
+                className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full text-3xl"
+                style={{
+                  background: "linear-gradient(135deg, #b8860b, #ffd700, #b8860b)",
+                  boxShadow: "0 0 20px #ffd70066",
+                }}
+              >
+                🏆
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#b8860b" }}>
+                  {language === "pt" ? "Títulos Mundiais de Construtores" : "World Constructors' Championships"}
+                </p>
+                <p
+                  className="font-display text-5xl font-black leading-none"
+                  style={{
+                    background: "linear-gradient(135deg, #b8860b, #ffd700, #fffacd, #ffd700, #b8860b)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    textShadow: "none",
+                  }}
+                >
+                  {team.championships}
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-white/10 bg-zinc-900 p-6">
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-zinc-800 text-2xl">
+                🏆
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-white/40">
+                  {language === "pt" ? "Títulos Mundiais de Construtores" : "World Constructors' Championships"}
+                </p>
+                <p className="font-display text-4xl font-black text-white/30">0</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Dados atuais da temporada — reservado */}
