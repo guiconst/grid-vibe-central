@@ -44,7 +44,7 @@ export default function Standings() {
                       <td className="p-3 sm:p-4 font-semibold">
                         <Link
                           to={`/pilotos/${driver.id}`}
-                          className="text-primary underline-offset-4 hover:underline"
+                          className="text-white underline-offset-4 hover:underline"
                         >
                           {driver.name}
                         </Link>
