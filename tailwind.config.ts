@@ -14,7 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Arial", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["Orbitron", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       boxShadow: {
         card: "0 18px 50px -28px hsl(var(--team-primary) / 0.55)",
