@@ -10,7 +10,8 @@
     "excerpt": {
       "pt": "A nova equipe Cadillac chega empolgada para sua primeira corrida em casa na Fórmula 1, no GP de Miami. O time preparou atualizações importantes no carro para tentar marcar seus primeiros pontos na temporada.",
       "en": "The new Cadillac team arrives excited for its first home race in Formula 1 at the Miami GP. The team has prepared significant car upgrades to try to score their first points of the season."
-    }
+    },
+    "image": "cadillac-miami.webp"
   },
   {
     "id": "verstappen-futuro",
@@ -23,7 +24,8 @@
     "excerpt": {
       "pt": "Max Verstappen afirmou que ainda não decidiu seus próximos passos na Fórmula 1 e que vai analisar tudo com calma. O piloto também comentou sobre mudanças recentes no regulamento.",
       "en": "Max Verstappen said he has not yet decided his next steps in Formula 1 and will take his time to analyse everything. The driver also commented on recent regulation changes."
-    }
+    },
+    "image": "verstappen-futuro.webp"
   },
   {
     "id": "mclaren-1000",
@@ -36,7 +38,8 @@
     "excerpt": {
       "pt": "A McLaren realizou um evento nas ruas de Miami para celebrar a aproximação de sua corrida número 1000 na Fórmula 1. Participaram pilotos atuais e nomes históricos da equipe.",
       "en": "McLaren held an event on the streets of Miami to celebrate the approach of their 1000th Formula 1 race. Current drivers and historic names from the team took part."
-    }
+    },
+    "image": "mclaren-1000.webp"
   },
   {
     "id": "f1-retorno-miami",
@@ -49,7 +52,8 @@
     "excerpt": {
       "pt": "A Fórmula 1 volta às pistas depois do cancelamento das etapas do Bahrein e Arábia Saudita. O GP de Miami será a quarta corrida do campeonato.",
       "en": "Formula 1 returns to the track following the cancellation of the Bahrain and Saudi Arabia rounds. The Miami GP will be the fourth race of the championship."
-    }
+    },
+    "image": "f1-retorno-miami.webp"
   },
   {
     "id": "fia-regulamento",
@@ -62,7 +66,8 @@
     "excerpt": {
       "pt": "A FIA oficializou mudanças nas regras técnicas após reclamações de pilotos sobre segurança e gerenciamento de energia.",
       "en": "The FIA has officially confirmed changes to the technical regulations following driver complaints about safety and energy management."
-    }
+    },
+    "image": "fia-regulamento.webp"
   },
   {
     "id": "turquia-2027",
@@ -75,6 +80,7 @@
     "excerpt": {
       "pt": "A Fórmula 1 confirmou o retorno do circuito de Istanbul Park ao calendário a partir de 2027, em acordo de vários anos.",
       "en": "Formula 1 has confirmed the return of Istanbul Park to the calendar from 2027 onwards, in a multi-year agreement."
-    }
+    },
+    "image": "turquia-2027.webp"
   }
 ]
