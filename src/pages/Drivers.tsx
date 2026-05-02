@@ -25,7 +25,7 @@ export function DriverDetail() {
 
   const photoSrc = `/images/drivers/${driver.id}.avif`;
   const manualBio = (driverBios as Record<string, string | undefined>)[driver.id];
-  const champ = (driver as any).championships ?? 0;
+  const champ = driver.championships ?? 0;
 
   return (
     <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
@@ -138,10 +138,10 @@ export function DriverDetail() {
         <h2 className="mt-10 font-display text-2xl font-bold">{language === "pt" ? "Temporada 2026" : "2026 Season"}</h2>
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
-            { label: language === "pt" ? "Pontos" : "Points", value: (driver as any).season?.points ?? 0 },
-            { label: language === "pt" ? "Vitórias" : "Wins", value: (driver as any).season?.wins ?? 0 },
-            { label: language === "pt" ? "Pódios" : "Podiums", value: (driver as any).season?.podiums ?? 0 },
-            { label: language === "pt" ? "Posição" : "Position", value: `P${(driver as any).season?.position ?? "—"}` },
+            { label: language === "pt" ? "Pontos" : "Points", value: driver.season?.points ?? 0 },
+            { label: language === "pt" ? "Vitórias" : "Wins", value: driver.season?.wins ?? 0 },
+            { label: language === "pt" ? "Pódios" : "Podiums", value: driver.season?.podiums ?? 0 },
+            { label: language === "pt" ? "Posição" : "Position", value: `P${driver.season?.position ?? "—"}` },
           ].map(({ label, value }) => (
             <div key={label} className="rounded-xl border border-border bg-muted/50 p-4 text-center">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
@@ -158,7 +158,7 @@ export function DriverDetail() {
             { label: language === "pt" ? "Vitórias" : "Wins", value: driver.stats.wins },
             { label: language === "pt" ? "Pódios" : "Podiums", value: driver.stats.podiums },
             { label: language === "pt" ? "Poles" : "Poles", value: driver.stats.poles },
-            { label: "DNFs", value: (driver.stats as any).dnfs ?? 0 },
+            { label: "DNFs", value: driver.stats.dnfs ?? 0 },
           ].map(({ label, value }) => (
             <div key={label} className="rounded-xl border border-border bg-muted/50 p-4 text-center">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
