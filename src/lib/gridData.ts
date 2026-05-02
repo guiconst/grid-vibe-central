@@ -29,7 +29,8 @@ export type Driver = {
   nationality?: { pt: string; en: string };
   bio?: { pt: string; en: string };
   facts?: { pt: string[]; en: string[] };
-  stats: { starts: number; wins: number; podiums: number; poles: number };
+  championships?: number;
+  stats: { starts: number; wins: number; podiums: number; poles: number; dnfs?: number };
   season: { position: number; points: number; wins?: number; podiums?: number };
 };
 
