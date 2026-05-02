@@ -37,14 +37,35 @@ export function TeamCard({ team, onActivate }: { team: Team; onActivate?: () => 
 }
 
 export function DriverCard({ driver, team, onActivate }: { driver: Driver; team: Team; onActivate?: () => void }) {
-  const { t, language } = useGrid();
+  const { t } = useGrid();
+  const faceSrc = `/images/drivers/face/${driver.id}.webp`;
+
   return (
-    <Link to={`/pilotos/${driver.id}`} onClick={onActivate} className="group rounded-lg border border-border bg-card p-5 shadow-card transition-grid-theme hover:-translate-y-1 hover:border-primary/50">
+    <Link
+      to={`/pilotos/${driver.id}`}
+      onClick={onActivate}
+      className="group rounded-lg border border-border bg-card p-5 shadow-card transition-grid-theme hover:-translate-y-1 hover:border-primary/50"
+    >
       <div className="flex items-start justify-between">
-        <div className="grid h-20 w-20 place-items-center rounded-lg bg-muted font-display text-3xl font-black" style={{ color: `hsl(${team.primary})` }}>#{driver.number}</div>
-        <span className="text-3xl">{driver.flag}</span>
+        <div className="flex items-center gap-3">
+          <div
+            className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-border"
+            style={{ background: `linear-gradient(160deg, hsl(${team.primary} / 0.25) 0%, hsl(${team.primary} / 0.05) 100%)` }}
+          >
+            <img
+              src={faceSrc}
+              alt={driver.name}
+              className="absolute bottom-0 left-1/2 h-full w-auto -translate-x-1/2 object-cover object-top"
+              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+            />
+          </div>
+          <span className="font-display text-3xl font-black leading-none" style={{ color: `hsl(${team.primary})` }}>
+            #{driver.number}
+          </span>
+        </div>
+        <span className="text-2xl">{driver.flag}</span>
       </div>
-      <h3 className="mt-5 font-display text-2xl font-black leading-tight">{driver.name}</h3>
+      <h3 className="mt-4 font-display text-2xl font-black leading-tight">{driver.name}</h3>
       <p className="mt-1 text-sm text-muted-foreground">{team.name}</p>
       <Button variant="link" className="mt-4 h-auto p-0">{t.common.readMore}<ArrowRight /></Button>
     </Link>
