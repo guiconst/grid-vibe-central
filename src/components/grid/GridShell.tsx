@@ -74,22 +74,18 @@ export function GridShell() {
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             {/* Esquerda: nome + slogan */}
             <div className="flex flex-col gap-1">
-              <span className="font-display text-xl font-black tracking-wide text-white">Central do Grid</span>
-              <span className="text-sm text-[#9CA3AF]">Sua central da Fórmula 1</span>
+              <span className="font-display text-xl font-black tracking-wide text-foreground">{t.footer.brand}</span>
+              <span className="text-sm text-muted-foreground">{t.footer.tagline}</span>
             </div>
             {/* Direita: aviso legal */}
             <div className="max-w-xs sm:text-right">
-              <span className="text-xs leading-relaxed text-[#9CA3AF]">
-                Site independente de fã. Não afiliado à Fórmula 1, FIA ou equipes.
-              </span>
+              <span className="text-xs leading-relaxed text-muted-foreground">{t.footer.disclaimer}</span>
             </div>
           </div>
           {/* Linha divisória */}
           <div className="my-6 border-t border-border/70" />
           {/* Copyright */}
-          <p className="text-center text-xs text-[#9CA3AF]">
-            © 2026 Central do Grid&nbsp;&nbsp;•&nbsp;&nbsp;Feito por Guilherme Constantino de Lara
-          </p>
+          <p className="text-center text-xs text-muted-foreground">{t.footer.copyright}</p>
         </div>
       </footer>
       <Dialog open={showFavoriteModal} onOpenChange={setShowFavoriteModal}>
