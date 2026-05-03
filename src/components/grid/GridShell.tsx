@@ -68,7 +68,7 @@ export function GridShell() {
       <main key={location.pathname} className="relative z-10 animate-route-in">
         <Outlet />
       </main>
-      <footer className="relative z-10 border-t border-white/10 px-4 pt-8 pb-6" style={{ background: "#0B1220" }}>
+      <footer className="relative z-10 border-t border-border/70 bg-card/60 px-4 pt-8 pb-6">
         <div className="mx-auto max-w-7xl">
           {/* Área principal */}
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
@@ -85,7 +85,7 @@ export function GridShell() {
             </div>
           </div>
           {/* Linha divisória */}
-          <div className="my-6 border-t border-white/10" />
+          <div className="my-6 border-t border-border/70" />
           {/* Copyright */}
           <p className="text-center text-xs text-[#9CA3AF]">
             © 2026 Central do Grid&nbsp;&nbsp;•&nbsp;&nbsp;Feito por Guilherme Constantino de Lara
