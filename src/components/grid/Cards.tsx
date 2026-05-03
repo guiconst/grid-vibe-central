@@ -10,7 +10,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
   const imageSrc = (item as any).image ? `/images/news/${(item as any).image}` : null;
 
   return (
-    <article className="group overflow-hidden rounded-lg border border-border bg-card shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]">
+    <article className="group overflow-hidden rounded-lg border border-border bg-card shadow-card transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]">
       {/* Capa: foto real ou gradiente fallback */}
       <div className="relative h-44 overflow-hidden">
         {imageSrc ? (
@@ -47,7 +47,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
 export function TeamCard({ team, onActivate }: { team: Team; onActivate?: () => void }) {
   const { t } = useGrid();
   return (
-    <Link to={`/equipes/${team.id}`} onClick={onActivate} className="group rounded-lg border border-border bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]">
+    <Link to={`/equipes/${team.id}`} onClick={onActivate} className="group rounded-lg border border-border bg-card p-5 shadow-card transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]">
       <span className="mb-5 block h-2 rounded-full" style={{ background: `linear-gradient(90deg, hsl(${team.primary}), hsl(${team.secondary}))` }} />
       <div className="text-3xl">{team.country}</div>
       <h3 className="mt-3 font-display text-2xl font-black">{team.name}</h3>
@@ -65,26 +65,23 @@ export function DriverCard({ driver, team, onActivate }: { driver: Driver; team:
     <Link
       to={`/pilotos/${driver.id}`}
       onClick={onActivate}
-      className="group rounded-lg border border-border bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]"
+      className="group rounded-lg border border-border bg-card p-5 shadow-card transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]"
     >
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div
-            className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-border"
-            style={{ background: `linear-gradient(160deg, hsl(${team.primary} / 0.25) 0%, hsl(${team.primary} / 0.05) 100%)` }}
-          >
-            <img
-              src={faceSrc}
-              alt={driver.name}
-              className="absolute bottom-0 left-1/2 h-full w-auto -translate-x-1/2 object-cover object-top"
-              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-            />
-          </div>
-          <span className="font-display text-3xl font-black leading-none" style={{ color: `hsl(${team.primary})` }}>
-            #{driver.number}
-          </span>
+      <div className="flex items-center gap-3">
+        <div
+          className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-border"
+          style={{ background: `linear-gradient(160deg, hsl(${team.primary} / 0.25) 0%, hsl(${team.primary} / 0.05) 100%)` }}
+        >
+          <img
+            src={faceSrc}
+            alt={driver.name}
+            className="absolute bottom-0 left-1/2 h-full w-auto -translate-x-1/2 object-cover object-top"
+            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+          />
         </div>
-        <span className="text-2xl">{driver.flag}</span>
+        <span className="font-display text-3xl font-black leading-none" style={{ color: `hsl(${team.primary})` }}>
+          #{driver.number}
+        </span>
       </div>
       <h3 className="mt-4 font-display text-2xl font-black leading-tight">{driver.name}</h3>
       <p className="mt-1 text-sm text-muted-foreground">{team.name}</p>
