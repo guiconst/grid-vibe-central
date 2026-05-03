@@ -47,7 +47,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
 export function TeamCard({ team, onActivate }: { team: Team; onActivate?: () => void }) {
   const { t } = useGrid();
   return (
-    <Link to={`/equipes/${team.id}`} onClick={onActivate} className="group rounded-lg border border-border bg-card p-5 shadow-card transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]">
+    <Link to={`/equipes/${team.id}`} onClick={onActivate} className="group flex flex-col rounded-lg border border-border bg-card p-5 shadow-card transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]">
       <span className="mb-5 block h-2 rounded-full" style={{ background: `linear-gradient(90deg, hsl(${team.primary}), hsl(${team.secondary}))` }} />
       <div className="text-3xl">{team.country}</div>
       <h3 className="mt-3 font-display text-2xl font-black">{team.name}</h3>
@@ -65,7 +65,7 @@ export function DriverCard({ driver, team, onActivate }: { driver: Driver; team:
     <Link
       to={`/pilotos/${driver.id}`}
       onClick={onActivate}
-      className="group rounded-lg border border-border bg-card p-5 shadow-card transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]"
+      className="group flex flex-col rounded-lg border border-border bg-card p-5 shadow-card transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]"
     >
       <div className="flex items-center gap-3">
         <div
