@@ -4,7 +4,7 @@ import { useGrid } from "@/context/GridContext";
 import { Race, formatRaceDate } from "@/lib/gridData";
 
 function diffTo(date: string) {
-  const target = new Date(`${date}T15:00:00`).getTime();
+  const target = new Date(`${date}T14:00:00`).getTime();
   const diff = Math.max(0, target - Date.now());
   return { days: Math.floor(diff / 86400000), hours: Math.floor((diff / 3600000) % 24), minutes: Math.floor((diff / 60000) % 60), seconds: Math.floor((diff / 1000) % 60) };
 }
