@@ -13,8 +13,8 @@ export default function Drivers() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <h1 className="font-display text-5xl font-black animate-fade-up">{t.drivers.title}</h1>
-      <p className="mt-3 text-muted-foreground animate-fade-up" style={{ animationDelay: "60ms" }}>{t.drivers.subtitle}</p>
-      <div className="my-8 flex flex-wrap gap-2 animate-fade-up" style={{ animationDelay: "100ms" }}>
+      <p className="mt-3 text-muted-foreground animate-fade-up" style={{ animationDelay: "100ms" }}>{t.drivers.subtitle}</p>
+      <div className="my-8 flex flex-wrap gap-2 animate-fade-up" style={{ animationDelay: "180ms" }}>
         <Button variant={teamFilter === "all" ? "hero" : "soft"} onClick={() => setTeamFilter("all")}>{t.common.all}</Button>
         {teams.map((team) => (
           <Button key={team.id} variant={teamFilter === team.id ? "hero" : "soft"} onClick={() => setTeamFilter(team.id)}>{team.name}</Button>
@@ -22,7 +22,7 @@ export default function Drivers() {
       </div>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {filtered.map((driver, i) => (
-          <div key={driver.id} className="animate-fade-up" style={{ animationDelay: `${140 + i * 55}ms` }}>
+          <div key={driver.id} className="animate-fade-up" style={{ animationDelay: `${260 + i * 80}ms` }}>
             <DriverCard driver={driver} team={teamById(driver.teamId)} onActivate={() => setThemeTeam(driver.teamId)} />
           </div>
         ))}
@@ -106,7 +106,7 @@ export function DriverDetail() {
                 className="pointer-events-none absolute inset-0 rounded-2xl"
                 style={{
                   background: "linear-gradient(105deg, transparent 40%, rgba(255,215,0,0.08) 50%, transparent 60%)",
-                  animation: "shimmer 3s infinite linear",
+                  animation: "shimmer 5s infinite linear",
                 }}
               />
               <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }`}</style>
