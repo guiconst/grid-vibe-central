@@ -9,7 +9,7 @@ function diffTo(date: string) {
   return { days: Math.floor(diff / 86400000), hours: Math.floor((diff / 3600000) % 24), minutes: Math.floor((diff / 60000) % 60), seconds: Math.floor((diff / 1000) % 60) };
 }
 
-export function Countdown({ race, centered }: { race: Race; centered?: boolean }) {
+export function Countdown({ race, centered, compact }: { race: Race; centered?: boolean; compact?: boolean }) {
   const { t, language } = useGrid();
   const [time, setTime] = useState(() => diffTo(race.date));
   useEffect(() => {
@@ -18,18 +18,20 @@ export function Countdown({ race, centered }: { race: Race; centered?: boolean }
   }, [race.date]);
   const parts = [[time.days, t.common.days], [time.hours, t.common.hours], [time.minutes, t.common.minutes], [time.seconds, t.common.seconds]];
   return (
-    <section className="rounded-lg border border-primary/30 bg-card/80 p-5 shadow-card backdrop-blur">
-      <div className={`mb-4 flex items-center gap-3 text-primary ${centered ? "justify-center" : ""}`}>
-        <CalendarClock />
-        <span className="font-semibold">{race.name[language]} · {formatRaceDate(race.date, language)}</span>
+    <section className={`rounded-lg bg-card/60 backdrop-blur ${compact ? "px-4 py-3" : "border border-primary/30 p-5 shadow-card"}`}>
+      <div className={`flex items-center gap-2 text-primary ${centered ? "justify-center" : ""} ${compact ? "mb-2 text-sm" : "mb-4"}`}>
+        <CalendarClock className={compact ? "h-4 w-4" : "h-5 w-5"} />
+        <span className={compact ? "text-sm font-medium" : "font-semibold"}>
+          {race.name[language]} · {formatRaceDate(race.date, language)}
+        </span>
       </div>
-      <div className="grid grid-cols-4 gap-3">
+      <div className={`grid grid-cols-4 ${compact ? "gap-2" : "gap-3"}`}>
         {parts.map(([value, label]) => (
-          <div key={label} className="rounded-md bg-muted p-3 text-center">
-            <div className={`font-display font-black ${centered ? "text-4xl sm:text-5xl" : "text-2xl sm:text-4xl"}`}>
+          <div key={label} className={`rounded-md bg-muted text-center ${compact ? "p-2" : "p-3"}`}>
+            <div className={`font-display font-black ${compact ? "text-2xl sm:text-3xl" : "text-4xl sm:text-5xl"}`}>
               {String(value).padStart(2, "0")}
             </div>
-            <div className="mt-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</div>
+            <div className="mt-0.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</div>
           </div>
         ))}
       </div>
