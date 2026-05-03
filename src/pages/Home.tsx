@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <div>
       {/* ── Countdown — topo, sem divisória, compacto ── */}
-      <section className="mx-auto max-w-3xl px-4 pt-8 pb-2 text-center sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-3xl px-4 pt-8 pb-2 text-center sm:px-6 lg:px-8 animate-fade-up" style={{ animationDelay: "0ms" }}>
         <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">
           {t.home.nextRace}
         </p>
@@ -33,7 +33,7 @@ export default function Home() {
       <section className="mx-auto grid min-h-[calc(100vh-14rem)] max-w-7xl items-center gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_540px] lg:px-8">
 
         {/* Esquerda: texto + botões */}
-        <div>
+        <div className="animate-fade-up" style={{ animationDelay: "80ms" }}>
           <h1 className="font-display text-6xl font-black leading-none sm:text-7xl lg:text-8xl">
             {t.home.title}
           </h1>
@@ -57,7 +57,7 @@ export default function Home() {
         </div>
 
         {/* Direita: líderes */}
-        <div className="rounded-2xl border border-border bg-card/80 p-6 shadow-card">
+        <div className="rounded-2xl border border-border bg-card/80 p-6 shadow-card animate-fade-up" style={{ animationDelay: "180ms" }}>
           <h2 className="mb-5 flex items-center gap-2 font-display text-2xl font-bold">
             <Trophy className="text-primary" />
             {t.home.leaders}
@@ -123,7 +123,7 @@ export default function Home() {
       </section>
 
       {/* ── Últimas notícias ── */}
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 animate-fade-up" style={{ animationDelay: "260ms" }}>
         <div className="mb-6 flex items-end justify-between gap-4">
           <h2 className="font-display text-4xl font-black">{t.home.latest}</h2>
           <Button variant="link" asChild>
@@ -131,7 +131,11 @@ export default function Home() {
           </Button>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {news.slice(0, 3).map((item) => <NewsCard key={item.id} item={item} />)}
+          {news.slice(0, 3).map((item, i) => (
+            <div key={item.id} className="animate-fade-up" style={{ animationDelay: `${320 + i * 80}ms` }}>
+              <NewsCard item={item} />
+            </div>
+          ))}
         </div>
       </section>
     </div>
