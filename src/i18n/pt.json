@@ -84,13 +84,17 @@
   },
   "about": {
     "title": "Sobre a Central do Grid",
-    "subtitle": "Um hub feito para fãs brasileiros acompanharem a F1 com contexto, visual premium e navegação simples.",
-    "project": "O projeto organiza dados mock em arquivos separados para facilitar uma futura integração com APIs como OpenF1 ou Ergast.",
+    "p1": "A Central do Grid surgiu como um projeto pessoal, criado inicialmente como passatempo e também para testar ferramentas e ideias de desenvolvimento.",
+    "p2": "Aproveitando um dia livre, comecei o projeto do zero e, com o passar dos dias, fui ajustando e evoluindo cada parte até chegar em um resultado que me deixasse satisfeito visualmente e funcionalmente.",
+    "p3": "Atualmente, o site ainda está em um estágio básico. Ele não utiliza APIs nem banco de dados, funcionando com dados organizados manualmente. Ainda assim, o foco foi criar uma experiência simples, clara e bem estruturada para acompanhar a Fórmula 1.",
+    "p4": "A ideia é continuar evoluindo o projeto aos poucos, adicionando novas funcionalidades, integrações com APIs e melhorias gerais conforme o tempo.",
     "credits": "Créditos",
-    "creditsText": "Central do Grid é um projeto independente de fã. Formula 1, F1 e nomes das equipes pertencem aos seus respectivos proprietários."
+    "creditsText": "A Central do Grid é um projeto independente de fã. Fórmula 1, F1 e nomes de equipes pertencem aos seus respectivos proprietários."
   },
   "footer": {
-    "disclaimer": "Site independente de fã. Não afiliado à Formula 1, FIA ou equipes.",
+    "tagline": "Sua central da Fórmula 1",
+    "disclaimer": "Site independente de fã. Não afiliado à Fórmula 1, FIA ou equipes.",
+    "copyright": "© 2026 Central do Grid • Feito por Guilherme Constantino de Lara",
     "brand": "Central do Grid"
   }
 }
