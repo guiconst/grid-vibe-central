@@ -9,7 +9,7 @@ export default function News() {
       <h1 className="font-display text-5xl font-black animate-fade-up">{t.news.title}</h1>
       <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {news.map((item, i) => (
-          <div key={item.id} className="animate-fade-up" style={{ animationDelay: `${60 + i * 70}ms` }}>
+          <div key={item.id} className="animate-fade-up" style={{ animationDelay: `${100 + i * 100}ms` }}>
             <NewsCard item={item} />
           </div>
         ))}
