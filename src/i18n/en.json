@@ -84,13 +84,17 @@
   },
   "about": {
     "title": "About Central do Grid",
-    "subtitle": "A hub built for F1 fans to follow the sport with context, premium visuals, and simple navigation.",
-    "project": "The project keeps mock data in separate files to make future integration with APIs like OpenF1 or Ergast easy.",
+    "p1": "Central do Grid started as a personal project, created as a hobby and also as a way to test different tools and development ideas.",
+    "p2": "Taking advantage of a free day, I started the project from scratch and, over the following days, kept improving and refining it until I reached a result I felt satisfied with, both visually and functionally.",
+    "p3": "At the moment, the site is still in a basic stage. It does not use APIs or a database yet, relying on manually organized data. Even so, the focus has been to create a simple, clear, and well-structured experience for following Formula 1.",
+    "p4": "The plan is to keep evolving the project over time, adding new features, API integrations, and overall improvements.",
     "credits": "Credits",
-    "creditsText": "Central do Grid is an independent fan project. Formula 1, F1, and team names belong to their respective owners."
+    "creditsText": "Central do Grid is an independent fan-made project. Formula 1, F1, and team names are property of their respective owners."
   },
   "footer": {
+    "tagline": "Your Formula 1 hub",
     "disclaimer": "Independent fan site. Not affiliated with Formula 1, FIA, or teams.",
+    "copyright": "© 2026 Central do Grid • Made by Guilherme Constantino de Lara",
     "brand": "Central do Grid"
   }
 }
