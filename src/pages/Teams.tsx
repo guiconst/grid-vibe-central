@@ -16,7 +16,6 @@ export default function Teams() {
             <TeamLogoCard team={team} />
           </div>
         ))}
-        ))}
       </div>
     </section>
   );
