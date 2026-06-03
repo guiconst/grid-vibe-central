@@ -1,4 +1,5 @@
 import { Menu, X, Languages } from "lucide-react";
+import { ApiStatus } from "@/components/grid/ApiStatus";
 import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -88,6 +89,7 @@ export function GridShell() {
           <p className="text-center text-xs text-muted-foreground">{t.footer.copyright}</p>
         </div>
       </footer>
+      <ApiStatus />
       <Dialog open={showFavoriteModal} onOpenChange={setShowFavoriteModal}>
         <DialogContent className="border-border bg-card text-card-foreground w-[calc(100vw-2rem)] max-w-2xl rounded-xl p-0 gap-0 overflow-hidden flex flex-col max-h-[90vh]">
           <DialogHeader className="px-5 pt-5 pb-4 border-b border-border shrink-0">
