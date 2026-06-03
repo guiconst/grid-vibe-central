@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { GridProvider } from "@/context/GridContext";
 import { GridShell } from "@/components/grid/GridShell";
+import { ApiStatus } from "@/components/grid/ApiStatus";
 import Home from "./pages/Home.tsx";
 import News from "./pages/News.tsx";
 import Drivers, { DriverDetail } from "./pages/Drivers.tsx";
@@ -14,7 +15,14 @@ import Standings from "./pages/Standings.tsx";
 import About from "./pages/About.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 2,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
