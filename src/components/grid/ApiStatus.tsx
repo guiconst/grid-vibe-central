@@ -1,15 +1,20 @@
 /**
- * Pequeno indicador discreto de status da API — aparece no canto
- * quando os dados estão sendo carregados ou quando há erro.
+ * Indicador de status da API — só aparece quando está buscando dados
+ * ou quando TODAS as queries falharam (não só uma).
  */
-import { useIsFetching, useIsMutating } from "@tanstack/react-query";
+import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import { RefreshCw, WifiOff } from "lucide-react";
-import { useDriverStandings } from "@/hooks/useF1Data";
 import { cn } from "@/lib/utils";
 
 export function ApiStatus() {
-  const isFetching = useIsFetching();
-  const { isError } = useDriverStandings();
+  const isFetching = useIsFetching({ queryKey: ["f1"] });
+  const qc = useQueryClient();
+
+  // Só considera erro se standings E calendar falharam
+  const driverState = qc.getQueryState(["f1", "driver-standings"]);
+  const calendarState = qc.getQueryState(["f1", "calendar"]);
+  const isError =
+    driverState?.status === "error" && calendarState?.status === "error";
 
   if (!isFetching && !isError) return null;
 
