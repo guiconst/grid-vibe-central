@@ -1,0 +1,319 @@
+/**
+ * F1 API Service
+ *
+ * Fontes gratuitas (sem chave):
+ *   - Ergast Mirror  → https://api.jolpi.ca/ergast/f1/   (standings, calendar, results)
+ *   - OpenF1         → https://api.openf1.org/v1/        (live session data, drivers)
+ *
+ * Fallback automático para os dados locais em caso de falha.
+ */
+
+// ─── Ergast (via jolpi.ca mirror) ───────────────────────────────────────────
+
+const ERGAST = "https://api.jolpi.ca/ergast/f1";
+
+export interface ErgastDriverStanding {
+  position: string;
+  points: string;
+  wins: string;
+  Driver: {
+    driverId: string;
+    givenName: string;
+    familyName: string;
+    nationality: string;
+    dateOfBirth: string;
+    permanentNumber?: string;
+  };
+  Constructors: Array<{ constructorId: string; name: string; nationality: string }>;
+}
+
+export interface ErgastConstructorStanding {
+  position: string;
+  points: string;
+  wins: string;
+  Constructor: { constructorId: string; name: string; nationality: string };
+}
+
+export interface ErgastRace {
+  season: string;
+  round: string;
+  raceName: string;
+  Circuit: { circuitId: string; circuitName: string; Location: { country: string; locality: string } };
+  date: string;
+  time?: string;
+  Results?: ErgastResult[];
+}
+
+export interface ErgastResult {
+  position: string;
+  points: string;
+  Driver: { driverId: string; givenName: string; familyName: string };
+  Constructor: { constructorId: string; name: string };
+  status: string;
+  FastestLap?: { rank: string; Time: { time: string } };
+}
+
+// Map Ergast constructorId → app teamId
+const CONSTRUCTOR_MAP: Record<string, string> = {
+  mercedes: "mercedes",
+  ferrari: "ferrari",
+  mclaren: "mclaren",
+  red_bull: "red-bull",
+  alpine: "alpine",
+  haas: "haas",
+  williams: "williams",
+  rb: "racing-bulls",
+  racing_bulls: "racing-bulls",
+  aston_martin: "aston-martin",
+  kick_sauber: "audi",
+  sauber: "audi",
+  cadillac: "cadillac",
+  andretti: "cadillac",
+};
+
+// Map Ergast driverId → app driverId (handles differences)
+const DRIVER_MAP: Record<string, string> = {
+  antonelli: "antonelli",
+  russell: "russell",
+  leclerc: "leclerc",
+  hamilton: "hamilton",
+  norris: "norris",
+  piastri: "piastri",
+  bearman: "bearman",
+  gasly: "gasly",
+  verstappen: "verstappen",
+  lawson: "lawson",
+  hadjar: "hadjar",
+  bortoleto: "bortoleto",
+  sainz: "sainz",
+  ocon: "ocon",
+  colapinto: "colapinto",
+  hulkenberg: "hulkenberg",
+  albon: "albon",
+  bottas: "bottas",
+  perez: "perez",
+  alonso: "alonso",
+  stroll: "stroll",
+  lindblad: "lindblad",
+};
+
+function mapDriverId(ergastId: string): string {
+  return DRIVER_MAP[ergastId] ?? ergastId;
+}
+function mapConstructorId(ergastId: string): string {
+  return CONSTRUCTOR_MAP[ergastId] ?? ergastId;
+}
+
+/** Fetch driver standings for a given season (defaults to current) */
+export async function fetchDriverStandings(season = "current") {
+  const res = await fetch(`${ERGAST}/${season}/driverStandings/`);
+  if (!res.ok) throw new Error(`Ergast standings: ${res.status}`);
+  const json = await res.json();
+  const list: ErgastDriverStanding[] =
+    json.MRData?.StandingsTable?.StandingsLists?.[0]?.DriverStandings ?? [];
+
+  return list.map((s) => ({
+    position: Number(s.position),
+    driverId: mapDriverId(s.Driver.driverId),
+    points: Number(s.points),
+    wins: Number(s.wins),
+    driverName: `${s.Driver.givenName} ${s.Driver.familyName}`,
+    teamId: mapConstructorId(s.Constructors[0]?.constructorId ?? ""),
+    nationality: s.Driver.nationality,
+  }));
+}
+
+/** Fetch constructor standings for a given season */
+export async function fetchConstructorStandings(season = "current") {
+  const res = await fetch(`${ERGAST}/${season}/constructorStandings/`);
+  if (!res.ok) throw new Error(`Ergast constructor standings: ${res.status}`);
+  const json = await res.json();
+  const list: ErgastConstructorStanding[] =
+    json.MRData?.StandingsTable?.StandingsLists?.[0]?.ConstructorStandings ?? [];
+
+  return list.map((s) => ({
+    position: Number(s.position),
+    teamId: mapConstructorId(s.Constructor.constructorId),
+    teamName: s.Constructor.name,
+    points: Number(s.points),
+    wins: Number(s.wins),
+  }));
+}
+
+/** Fetch full race calendar for a season */
+export async function fetchCalendar(season = "current") {
+  const res = await fetch(`${ERGAST}/${season}/`);
+  if (!res.ok) throw new Error(`Ergast calendar: ${res.status}`);
+  const json = await res.json();
+  const races: ErgastRace[] = json.MRData?.RaceTable?.Races ?? [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Fetch last completed round to mark "completed"
+  let lastCompletedRound = 0;
+  try {
+    const lastRes = await fetch(`${ERGAST}/${season}/last/results/`);
+    if (lastRes.ok) {
+      const lastJson = await lastRes.json();
+      lastCompletedRound = Number(lastJson.MRData?.RaceTable?.Races?.[0]?.round ?? 0);
+    }
+  } catch {
+    // ignore
+  }
+
+  return races.map((r) => {
+    const round = Number(r.round);
+    const raceDate = new Date(`${r.date}T12:00:00`);
+    let status: "completed" | "next" | "upcoming";
+    if (round <= lastCompletedRound) {
+      status = "completed";
+    } else if (round === lastCompletedRound + 1) {
+      status = "next";
+    } else {
+      status = "upcoming";
+    }
+
+    return {
+      id: r.Circuit.circuitId,
+      name: {
+        pt: r.raceName.replace("Grand Prix", "GP"),
+        en: r.raceName,
+      },
+      circuit: r.Circuit.circuitName,
+      date: r.date,
+      round,
+      status,
+      country: r.Circuit.Location.country,
+      locality: r.Circuit.Location.locality,
+    };
+  });
+}
+
+/** Fetch last race results */
+export async function fetchLastRaceResults(season = "current") {
+  const res = await fetch(`${ERGAST}/${season}/last/results/`);
+  if (!res.ok) throw new Error(`Ergast last results: ${res.status}`);
+  const json = await res.json();
+  const race: ErgastRace = json.MRData?.RaceTable?.Races?.[0];
+  if (!race) return null;
+
+  return {
+    raceName: race.raceName,
+    date: race.date,
+    circuit: race.Circuit.circuitName,
+    results: (race.Results ?? []).slice(0, 10).map((r) => ({
+      position: Number(r.position),
+      driverId: mapDriverId(r.Driver.driverId),
+      driverName: `${r.Driver.givenName} ${r.Driver.familyName}`,
+      teamId: mapConstructorId(r.Constructor.constructorId),
+      points: Number(r.points),
+      status: r.status,
+      fastestLap: r.FastestLap?.rank === "1" ? r.FastestLap.Time.time : null,
+    })),
+  };
+}
+
+/** Fetch driver season stats from Ergast */
+export async function fetchDriverSeasonStats(season = "current") {
+  const res = await fetch(`${ERGAST}/${season}/driverStandings/`);
+  if (!res.ok) throw new Error(`Ergast driver stats: ${res.status}`);
+  const json = await res.json();
+  const list: ErgastDriverStanding[] =
+    json.MRData?.StandingsTable?.StandingsLists?.[0]?.DriverStandings ?? [];
+
+  const stats: Record<string, { position: number; points: number; wins: number }> = {};
+  for (const s of list) {
+    const id = mapDriverId(s.Driver.driverId);
+    stats[id] = {
+      position: Number(s.position),
+      points: Number(s.points),
+      wins: Number(s.wins),
+    };
+  }
+  return stats;
+}
+
+// ─── OpenF1 ─────────────────────────────────────────────────────────────────
+
+const OPENF1 = "https://api.openf1.org/v1";
+
+export interface OpenF1Session {
+  session_key: number;
+  session_name: string;
+  session_type: string;
+  status: string;
+  date_start: string;
+  date_end: string;
+  circuit_short_name: string;
+  meeting_name: string;
+  country_name: string;
+  year: number;
+}
+
+export interface OpenF1Driver {
+  driver_number: number;
+  broadcast_name: string;
+  full_name: string;
+  name_acronym: string;
+  team_name: string;
+  team_colour: string;
+  country_code: string;
+  headshot_url: string;
+  session_key: number;
+}
+
+/** Get the latest/current session info */
+export async function fetchLatestSession(): Promise<OpenF1Session | null> {
+  try {
+    const res = await fetch(`${OPENF1}/sessions?session_key=latest`);
+    if (!res.ok) return null;
+    const data: OpenF1Session[] = await res.json();
+    return data[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Get drivers from the latest session (includes headshots & team colors) */
+export async function fetchOpenF1Drivers(): Promise<OpenF1Driver[]> {
+  try {
+    const res = await fetch(`${OPENF1}/drivers?session_key=latest`);
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
+/** Get live race positions (only during a session) */
+export async function fetchLivePositions() {
+  try {
+    const res = await fetch(`${OPENF1}/position?session_key=latest`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    // Return most recent position for each driver
+    const latest: Record<number, { position: number; date: string }> = {};
+    for (const item of data) {
+      if (!latest[item.driver_number] || item.date > latest[item.driver_number].date) {
+        latest[item.driver_number] = { position: item.position, date: item.date };
+      }
+    }
+    return Object.entries(latest).map(([num, val]) => ({
+      driverNumber: Number(num),
+      position: val.position,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+/** Get current year schedule from OpenF1 meetings */
+export async function fetchOpenF1Meetings(year = new Date().getFullYear()) {
+  try {
+    const res = await fetch(`${OPENF1}/meetings?year=${year}`);
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
