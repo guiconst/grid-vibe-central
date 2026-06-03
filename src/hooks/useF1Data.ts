@@ -1,6 +1,6 @@
 /**
  * React Query hooks for F1 live data
- * Cada hook faz fallback automático para os dados locais se a API falhar.
+ * Fallback robusto para dados locais quando a API não responde.
  */
 
 import { useQuery } from "@tanstack/react-query";
@@ -14,11 +14,34 @@ import {
   fetchLivePositions,
 } from "@/services/f1Api";
 import standingsJson from "@/data/standings.json";
+import driversJson from "@/data/drivers.json";
 import calendarJson from "@/data/calendar.json";
 
-// ─── Standings ───────────────────────────────────────────────────────────────
+// ─── Fallback data bem formado (mesmo shape que a API retorna) ────────────────
 
-/** Driver standings — atualiza a cada 5 min */
+const DRIVER_FALLBACK = standingsJson.drivers.map((d) => {
+  const localDriver = driversJson.find((dr) => dr.id === d.driverId);
+  return {
+    position: d.position,
+    driverId: d.driverId,
+    points: d.points,
+    wins: d.wins,
+    driverName: localDriver?.name ?? d.driverId,
+    teamId: localDriver?.teamId ?? "",
+    nationality: "",
+  };
+});
+
+const CONSTRUCTOR_FALLBACK = standingsJson.constructors.map((c) => ({
+  position: c.position,
+  teamId: c.teamId,
+  teamName: c.teamId,
+  points: c.points,
+  wins: 0,
+}));
+
+// ─── Standings ────────────────────────────────────────────────────────────────
+
 export function useDriverStandings() {
   return useQuery({
     queryKey: ["f1", "driver-standings"],
@@ -26,19 +49,13 @@ export function useDriverStandings() {
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     retry: 2,
-    placeholderData: standingsJson.drivers.map((d) => ({
-      position: d.position,
-      driverId: d.driverId,
-      points: d.points,
-      wins: d.wins,
-      driverName: d.driverId,
-      teamId: "",
-      nationality: "",
-    })),
+    // initialData: dados síncronos que aparecem imediatamente e não mostram loading
+    // (placeholderData causava re-render duplo que crashava o componente)
+    initialData: DRIVER_FALLBACK,
+    initialDataUpdatedAt: 0, // força revalidação imediata
   });
 }
 
-/** Constructor standings — atualiza a cada 5 min */
 export function useConstructorStandings() {
   return useQuery({
     queryKey: ["f1", "constructor-standings"],
@@ -46,32 +63,25 @@ export function useConstructorStandings() {
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     retry: 2,
-    placeholderData: standingsJson.constructors.map((c) => ({
-      position: c.position,
-      teamId: c.teamId,
-      teamName: c.teamId,
-      points: c.points,
-      wins: 0,
-    })),
+    initialData: CONSTRUCTOR_FALLBACK,
+    initialDataUpdatedAt: 0,
   });
 }
 
-/** Combined standings (drivers + constructors) */
 export function useStandings() {
-  const drivers = useDriverStandings();
-  const constructors = useConstructorStandings();
+  const driversQuery = useDriverStandings();
+  const constructorsQuery = useConstructorStandings();
   return {
-    drivers: drivers.data ?? [],
-    constructors: constructors.data ?? [],
-    isLoading: drivers.isLoading || constructors.isLoading,
-    isError: drivers.isError && constructors.isError,
-    lastUpdated: drivers.dataUpdatedAt,
+    drivers: driversQuery.data ?? DRIVER_FALLBACK,
+    constructors: constructorsQuery.data ?? CONSTRUCTOR_FALLBACK,
+    isLoading: driversQuery.isFetching || constructorsQuery.isFetching,
+    isError: driversQuery.isError && constructorsQuery.isError,
+    lastUpdated: driversQuery.dataUpdatedAt,
   };
 }
 
-// ─── Calendar ────────────────────────────────────────────────────────────────
+// ─── Calendar ─────────────────────────────────────────────────────────────────
 
-/** Full season calendar — atualiza a cada hora */
 export function useCalendar() {
   return useQuery({
     queryKey: ["f1", "calendar"],
@@ -79,23 +89,23 @@ export function useCalendar() {
     staleTime: 60 * 60 * 1000,
     gcTime: 2 * 60 * 60 * 1000,
     retry: 2,
-    placeholderData: calendarJson as any,
+    initialData: calendarJson as any,
+    initialDataUpdatedAt: 0,
   });
 }
 
-/** Next upcoming race */
 export function useNextRace() {
-  const { data: calendar, isLoading } = useCalendar();
+  const { data: calendar, isFetching } = useCalendar();
+  const races = calendar ?? [];
   const nextRace =
-    calendar?.find((r: any) => r.status === "next") ||
-    calendar?.find((r: any) => r.status === "upcoming") ||
-    calendar?.[0];
-  return { nextRace, isLoading };
+    races.find((r: any) => r.status === "next") ||
+    races.find((r: any) => r.status === "upcoming") ||
+    races[0];
+  return { nextRace, isLoading: isFetching };
 }
 
-// ─── Last race results ───────────────────────────────────────────────────────
+// ─── Last race results ────────────────────────────────────────────────────────
 
-/** Results of the most recent race — atualiza a cada 30 min */
 export function useLastRaceResults() {
   return useQuery({
     queryKey: ["f1", "last-race-results"],
@@ -106,9 +116,8 @@ export function useLastRaceResults() {
   });
 }
 
-// ─── OpenF1 live data ────────────────────────────────────────────────────────
+// ─── OpenF1 live ──────────────────────────────────────────────────────────────
 
-/** Latest session info from OpenF1 */
 export function useLatestSession() {
   return useQuery({
     queryKey: ["openf1", "latest-session"],
@@ -119,7 +128,6 @@ export function useLatestSession() {
   });
 }
 
-/** Driver headshots & team colours from OpenF1 */
 export function useOpenF1Drivers() {
   return useQuery({
     queryKey: ["openf1", "drivers"],
@@ -130,7 +138,6 @@ export function useOpenF1Drivers() {
   });
 }
 
-/** Live race positions — polls every 5 seconds during a session */
 export function useLivePositions() {
   const { data: session } = useLatestSession();
   const isLive = session?.status === "started";
