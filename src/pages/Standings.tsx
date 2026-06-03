@@ -1,15 +1,33 @@
 import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGrid } from "@/context/GridContext";
-import { drivers, teamById } from "@/lib/gridData";
+import { drivers as localDrivers, teams as localTeams } from "@/lib/gridData";
 import { useStandings } from "@/hooks/useF1Data";
 import { RefreshCw } from "lucide-react";
+
+// Helpers completamente seguros — nunca retornam null/undefined
+function safeDriver(driverId: string) {
+  return localDrivers.find((d) => d.id === driverId) ?? null;
+}
+
+function safeTeam(teamId: string) {
+  if (!teamId) return null;
+  return localTeams.find((t) => t.id === teamId) ?? null;
+}
+
+function teamDisplayName(teamId: string) {
+  if (!teamId) return "—";
+  if (teamId === "red-bull") return "Red Bull Racing";
+  return localTeams.find((t) => t.id === teamId)?.name ?? teamId;
+}
 
 export default function Standings() {
   const { t } = useGrid();
   const { drivers: driverRows, constructors: constructorRows, isLoading, lastUpdated } = useStandings();
 
-  const lastUpdatedStr = lastUpdated
+  // Só mostra timestamp se veio da API (não é o initialData antigo)
+  const isFromApi = lastUpdated > 0 && Date.now() - lastUpdated < 60 * 60 * 1000;
+  const lastUpdatedStr = isFromApi
     ? new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(
         new Date(lastUpdated)
       )
@@ -21,10 +39,9 @@ export default function Standings() {
         <h1 className="text-center font-display text-4xl font-black sm:text-5xl">
           {t.standings.title}
         </h1>
-        {isLoading && (
-          <RefreshCw className="h-5 w-5 animate-spin text-primary" />
-        )}
+        {isLoading && <RefreshCw className="h-5 w-5 animate-spin text-primary" />}
       </div>
+
       {lastUpdatedStr && (
         <p className="text-center text-xs text-muted-foreground mb-6">
           Atualizado via API Ergast · {lastUpdatedStr}
@@ -39,8 +56,11 @@ export default function Standings() {
           </TabsList>
         </div>
 
-        {/* Pilotos */}
-        <TabsContent value="drivers" className="mt-5 overflow-hidden rounded-lg border border-border bg-card">
+        {/* ── Pilotos ── */}
+        <TabsContent
+          value="drivers"
+          className="mt-5 overflow-hidden rounded-lg border border-border bg-card"
+        >
           <div className="overflow-x-auto">
             <table className="w-full min-w-[480px] text-left">
               <thead className="bg-muted text-sm text-muted-foreground">
@@ -54,19 +74,11 @@ export default function Standings() {
               </thead>
               <tbody>
                 {driverRows.map((row) => {
-                  // Try to find local driver data for links/colors; fall back to API name
-                  const localDriver = drivers.find((d) => d.id === row.driverId);
-                  const team = localDriver
-                    ? teamById(localDriver.teamId)
-                    : row.teamId
-                    ? teamById(row.teamId)
-                    : null;
-                  const teamName = team
-                    ? team.id === "red-bull"
-                      ? "Red Bull Racing"
-                      : team.name
-                    : row.teamId;
-                  const displayName = localDriver?.name ?? row.driverName;
+                  const localDriver = safeDriver(row.driverId);
+                  // teamId vem da API ou do driver local
+                  const resolvedTeamId = row.teamId || localDriver?.teamId || "";
+                  const team = safeTeam(resolvedTeamId);
+                  const displayName = localDriver?.name ?? row.driverName ?? row.driverId;
 
                   return (
                     <tr
@@ -74,6 +86,7 @@ export default function Standings() {
                       className="border-t border-border transition-grid-theme hover:bg-accent"
                     >
                       <td className="p-3 sm:p-4 font-black">{row.position}</td>
+
                       <td className="p-3 sm:p-4 font-semibold">
                         {localDriver ? (
                           <Link
@@ -86,6 +99,7 @@ export default function Standings() {
                           <span>{displayName}</span>
                         )}
                       </td>
+
                       <td className="p-3 sm:p-4">
                         {team ? (
                           <Link
@@ -96,12 +110,15 @@ export default function Standings() {
                               className="inline-block h-3 w-3 rounded-full"
                               style={{ backgroundColor: `hsl(${team.primary})` }}
                             />
-                            {teamName}
+                            {teamDisplayName(team.id)}
                           </Link>
                         ) : (
-                          <span>{teamName}</span>
+                          <span className="text-muted-foreground">
+                            {teamDisplayName(resolvedTeamId)}
+                          </span>
                         )}
                       </td>
+
                       <td className="p-3 sm:p-4 font-bold text-primary">{row.points}</td>
                       <td className="p-3 sm:p-4">{row.wins}</td>
                     </tr>
@@ -112,8 +129,11 @@ export default function Standings() {
           </div>
         </TabsContent>
 
-        {/* Construtores */}
-        <TabsContent value="constructors" className="mt-5 overflow-hidden rounded-lg border border-border bg-card">
+        {/* ── Construtores ── */}
+        <TabsContent
+          value="constructors"
+          className="mt-5 overflow-hidden rounded-lg border border-border bg-card"
+        >
           <div className="overflow-x-auto">
             <table className="w-full min-w-[320px] text-left">
               <thead className="bg-muted text-sm text-muted-foreground">
@@ -126,15 +146,15 @@ export default function Standings() {
               </thead>
               <tbody>
                 {constructorRows.map((row) => {
-                  const team = teamById(row.teamId);
-                  const teamName =
-                    team?.id === "red-bull" ? "Red Bull Racing" : team?.name ?? row.teamName;
+                  const team = safeTeam(row.teamId);
+
                   return (
                     <tr
-                      key={row.teamId}
+                      key={row.teamId || row.position}
                       className="border-t border-border transition-grid-theme hover:bg-accent"
                     >
                       <td className="p-3 sm:p-4 font-black">{row.position}</td>
+
                       <td className="p-3 sm:p-4 font-semibold">
                         {team ? (
                           <Link
@@ -145,12 +165,15 @@ export default function Standings() {
                               className="inline-block h-3 w-3 rounded-full"
                               style={{ backgroundColor: `hsl(${team.primary})` }}
                             />
-                            {teamName}
+                            {teamDisplayName(team.id)}
                           </Link>
                         ) : (
-                          <span>{teamName}</span>
+                          <span className="text-muted-foreground">
+                            {teamDisplayName(row.teamId)}
+                          </span>
                         )}
                       </td>
+
                       <td className="p-3 sm:p-4 font-bold text-primary">{row.points}</td>
                       <td className="p-3 sm:p-4">{row.wins}</td>
                     </tr>
