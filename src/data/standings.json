@@ -1,8 +1,8 @@
 {
   "drivers": [
     {"position":1,"driverId":"antonelli","points":156,"wins":5},
-    {"position":2,"driverId":"hamilton","points":90,"wins":1},
-    {"position":3,"driverId":"russell","points":88,"wins":0},
+    {"position":2,"driverId":"hamilton","points":90,"wins":0},
+    {"position":3,"driverId":"russell","points":88,"wins":1},
     {"position":4,"driverId":"leclerc","points":75,"wins":0},
     {"position":5,"driverId":"piastri","points":60,"wins":0},
     {"position":6,"driverId":"norris","points":58,"wins":0},
@@ -24,8 +24,8 @@
     {"position":22,"driverId":"stroll","points":0,"wins":0}
   ],
   "constructors": [
-    {"position":1,"teamId":"mercedes","points":244,"wins":5},
-    {"position":2,"teamId":"ferrari","points":165,"wins":1},
+    {"position":1,"teamId":"mercedes","points":244,"wins":6},
+    {"position":2,"teamId":"ferrari","points":165,"wins":0},
     {"position":3,"teamId":"mclaren","points":118,"wins":0},
     {"position":4,"teamId":"red-bull","points":72,"wins":0},
     {"position":5,"teamId":"alpine","points":41,"wins":0},
