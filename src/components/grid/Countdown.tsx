@@ -3,17 +3,20 @@ import { CalendarClock } from "lucide-react";
 import { useGrid } from "@/context/GridContext";
 import { Race, formatRaceDate } from "@/lib/gridData";
 
-function diffTo(date: string) {
-  const target = new Date(`${date}T14:00:00`).getTime();
+function diffTo(date: string, time?: string | null) {
+  // Se a API fornecer o horário exato (ex: "13:00:00Z"), usa ele; senão assume 14:00 UTC
+  const isoTime = time ?? "14:00:00Z";
+  const suffix = isoTime.endsWith("Z") ? isoTime : `${isoTime}Z`;
+  const target = new Date(`${date}T${suffix}`).getTime();
   const diff = Math.max(0, target - Date.now());
   return { days: Math.floor(diff / 86400000), hours: Math.floor((diff / 3600000) % 24), minutes: Math.floor((diff / 60000) % 60), seconds: Math.floor((diff / 1000) % 60) };
 }
 
 export function Countdown({ race, centered, compact }: { race: Race; centered?: boolean; compact?: boolean }) {
   const { t, language } = useGrid();
-  const [time, setTime] = useState(() => diffTo(race.date));
+  const [time, setTime] = useState(() => diffTo(race.date, (race as any).time));
   useEffect(() => {
-    const interval = window.setInterval(() => setTime(diffTo(race.date)), 1000);
+    const interval = window.setInterval(() => setTime(diffTo(race.date, (race as any).time)), 1000);
     return () => window.clearInterval(interval);
   }, [race.date]);
   const parts = [[time.days, t.common.days], [time.hours, t.common.hours], [time.minutes, t.common.minutes], [time.seconds, t.common.seconds]];
