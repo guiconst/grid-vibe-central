@@ -201,6 +201,7 @@ export async function fetchCalendar(season = CURRENT_SEASON) {
       },
       circuit: r.Circuit.circuitName,
       date: r.date,
+      time: r.time ?? null,
       round,
       status,
       country: r.Circuit.Location.country,
