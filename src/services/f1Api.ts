@@ -67,6 +67,7 @@ const CONSTRUCTOR_MAP: Record<string, string> = {
   aston_martin: "aston-martin",
   kick_sauber: "audi",
   sauber: "audi",
+  audi: "audi",
   cadillac: "cadillac",
   andretti: "cadillac",
 };
@@ -104,13 +105,25 @@ function mapConstructorId(ergastId: string): string {
   return CONSTRUCTOR_MAP[ergastId] ?? ergastId;
 }
 
+// Ano atual da temporada F1 — atualizar quando mudar de temporada
+const CURRENT_SEASON = "2026";
+
 /** Fetch driver standings for a given season (defaults to current) */
-export async function fetchDriverStandings(season = "current") {
-  const res = await fetch(`${ERGAST}/${season}/driverStandings/`);
-  if (!res.ok) throw new Error(`Ergast standings: ${res.status}`);
-  const json = await res.json();
-  const list: ErgastDriverStanding[] =
-    json.MRData?.StandingsTable?.StandingsLists?.[0]?.DriverStandings ?? [];
+export async function fetchDriverStandings(season = CURRENT_SEASON) {
+  // Tenta a season solicitada; se vier vazia, tenta "current" como fallback
+  const tryFetch = async (s: string) => {
+    const res = await fetch(`${ERGAST}/${s}/driverStandings/`);
+    if (!res.ok) throw new Error(`Ergast standings: ${res.status}`);
+    const json = await res.json();
+    return (json.MRData?.StandingsTable?.StandingsLists?.[0]?.DriverStandings ?? []) as ErgastDriverStanding[];
+  };
+
+  let list = await tryFetch(season);
+  // Se a API não tiver dados para a season explícita, tenta "current"
+  if (list.length === 0 && season !== "current") {
+    list = await tryFetch("current");
+  }
+  if (list.length === 0) throw new Error("Ergast standings: lista vazia");
 
   return list.map((s) => ({
     position: Number(s.position),
@@ -124,12 +137,19 @@ export async function fetchDriverStandings(season = "current") {
 }
 
 /** Fetch constructor standings for a given season */
-export async function fetchConstructorStandings(season = "current") {
-  const res = await fetch(`${ERGAST}/${season}/constructorStandings/`);
-  if (!res.ok) throw new Error(`Ergast constructor standings: ${res.status}`);
-  const json = await res.json();
-  const list: ErgastConstructorStanding[] =
-    json.MRData?.StandingsTable?.StandingsLists?.[0]?.ConstructorStandings ?? [];
+export async function fetchConstructorStandings(season = CURRENT_SEASON) {
+  const tryFetch = async (s: string) => {
+    const res = await fetch(`${ERGAST}/${s}/constructorStandings/`);
+    if (!res.ok) throw new Error(`Ergast constructor standings: ${res.status}`);
+    const json = await res.json();
+    return (json.MRData?.StandingsTable?.StandingsLists?.[0]?.ConstructorStandings ?? []) as ErgastConstructorStanding[];
+  };
+
+  let list = await tryFetch(season);
+  if (list.length === 0 && season !== "current") {
+    list = await tryFetch("current");
+  }
+  if (list.length === 0) throw new Error("Ergast constructor standings: lista vazia");
 
   return list.map((s) => ({
     position: Number(s.position),
@@ -141,7 +161,7 @@ export async function fetchConstructorStandings(season = "current") {
 }
 
 /** Fetch full race calendar for a season */
-export async function fetchCalendar(season = "current") {
+export async function fetchCalendar(season = CURRENT_SEASON) {
   const res = await fetch(`${ERGAST}/${season}/`);
   if (!res.ok) throw new Error(`Ergast calendar: ${res.status}`);
   const json = await res.json();
@@ -190,7 +210,7 @@ export async function fetchCalendar(season = "current") {
 }
 
 /** Fetch last race results */
-export async function fetchLastRaceResults(season = "current") {
+export async function fetchLastRaceResults(season = CURRENT_SEASON) {
   const res = await fetch(`${ERGAST}/${season}/last/results/`);
   if (!res.ok) throw new Error(`Ergast last results: ${res.status}`);
   const json = await res.json();
@@ -214,7 +234,7 @@ export async function fetchLastRaceResults(season = "current") {
 }
 
 /** Fetch driver season stats from Ergast */
-export async function fetchDriverSeasonStats(season = "current") {
+export async function fetchDriverSeasonStats(season = CURRENT_SEASON) {
   const res = await fetch(`${ERGAST}/${season}/driverStandings/`);
   if (!res.ok) throw new Error(`Ergast driver stats: ${res.status}`);
   const json = await res.json();
