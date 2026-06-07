@@ -37,7 +37,7 @@ const CONSTRUCTOR_FALLBACK = standingsJson.constructors.map((c) => ({
   teamId: c.teamId,
   teamName: c.teamId,
   points: c.points,
-  wins: 0,
+  wins: (c as any).wins ?? 0,
 }));
 
 // ─── Standings ────────────────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ export function useStandings() {
 export function useCalendar() {
   return useQuery({
     queryKey: ["f1", "calendar"],
-    queryFn: () => fetchCalendar("current"),
+    queryFn: () => fetchCalendar(),
     staleTime: 60 * 60 * 1000,
     gcTime: 2 * 60 * 60 * 1000,
     retry: 2,
@@ -109,7 +109,7 @@ export function useNextRace() {
 export function useLastRaceResults() {
   return useQuery({
     queryKey: ["f1", "last-race-results"],
-    queryFn: () => fetchLastRaceResults("current"),
+    queryFn: () => fetchLastRaceResults(),
     staleTime: 30 * 60 * 1000,
     gcTime: 2 * 60 * 60 * 1000,
     retry: 2,
