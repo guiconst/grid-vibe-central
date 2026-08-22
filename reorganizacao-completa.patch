@@ -1,0 +1,1269 @@
+diff --git a/REESTRUTURACAO.md b/REESTRUTURACAO.md
+new file mode 100644
+index 0000000..9067947
+--- /dev/null
++++ b/REESTRUTURACAO.md
+@@ -0,0 +1,121 @@
++# Reestruturação do projeto — guia rápido
++
++Este documento explica a nova organização de pastas do **Central do Grid**,
++depois da reorganização por *features*.
++
++## Por que mudou
++
++Antes, o projeto tinha tudo solto em pastas genéricas (`pages/`, `components/grid/`,
++`data/`, `hooks/`, `services/`), sem relação direta entre um arquivo e o assunto
++que ele resolve. Isso causava bugs "silenciosos" — por exemplo, uma página de
++detalhe escondida dentro do mesmo arquivo da listagem, fácil de esquecer ao
++atualizar algo.
++
++Agora cada assunto (piloto, equipe, calendário, notícia, classificação, home,
++sobre) tem sua própria pasta dentro de `src/features/`, com tudo que é
++específico dele: página(s), componentes e dados.
++
++## Nova estrutura
++
++```
++src/
++  app/
++    App.tsx                 # componente raiz + rotas
++
++  features/                 # uma pasta por assunto do site
++    home/
++      pages/Home.tsx
++    news/
++      pages/News.tsx
++      components/NewsCard.tsx
++      data/news.json
++    drivers/
++      pages/DriversList.tsx  # /pilotos
++      pages/DriverDetail.tsx # /pilotos/:id
++      components/DriverCard.tsx
++      data/drivers.json
++      data/driverBios.ts
++    teams/
++      pages/TeamsList.tsx    # /equipes
++      pages/TeamDetail.tsx   # /equipes/:id
++      components/TeamCard.tsx
++      data/teams.json
++    standings/
++      pages/Standings.tsx    # /classificacao
++    calendar/
++      pages/Calendar.tsx     # /calendario
++      components/Countdown.tsx
++      data/calendar.json
++    about/
++      pages/About.tsx        # /sobre
++
++  shared/                   # código usado por mais de uma feature
++    components/
++      layout/GridShell.tsx   # header/footer/navegação
++      ApiStatus.tsx
++      NavLink.tsx
++    context/GridContext.tsx  # idioma, tema, equipe favorita
++    hooks/useF1Data.ts       # hooks React Query (standings, calendário, etc)
++    services/
++      f1Api.ts                # chamadas fetch cru às APIs (Ergast + OpenF1)
++      f1Mappings.ts            # mapeamento de IDs Ergast → IDs do app
++
++  lib/
++    entities.ts               # acesso aos dados (teamById, driverById...)
++    types.ts                  # tipos compartilhados (Team, Driver, Race)
++    utils.ts                  # ⚠️ não mexer — convenção do shadcn/ui
++
++  hooks/
++    use-toast.ts               # ⚠️ não mexer — convenção do shadcn/ui
++    use-mobile.tsx              # ⚠️ não mexer — convenção do shadcn/ui
++
++  components/ui/               # componentes shadcn/ui — não tocado, é vendor
++
++  data/
++    standings.json              # fallback compartilhado (pilotos + construtores)
++
++  pages/
++    NotFound.tsx                 # única página genérica de verdade (404)
++
++  i18n/                          # pt.json / en.json — inalterado
++  test/                          # inalterado
++```
++
++## Por que `components/ui`, `lib/utils.ts`, `hooks/use-toast.ts` e
++## `hooks/use-mobile.tsx` continuam nos lugares antigos
++
++Esses arquivos seguem a convenção do **shadcn/ui**, configurada em
++`components.json` (`aliases.utils`, `aliases.hooks`, `aliases.ui`). Se algum
++dia você rodar `npx shadcn add <componente>` para adicionar um novo componente
++de UI, o CLI vai procurar exatamente nesses caminhos. Movê-los quebraria esse
++fluxo — por isso ficaram de fora da reorganização por features.
++
++## O que foi removido (código morto)
++
++- `src/pages/Index.tsx` — sobra do template inicial da Lovable, nunca importado.
++- `src/App.css` — CSS do template Vite padrão, nunca importado (o app usa `index.css`).
++- `TeamCard` e `StatPill` antigos em `components/grid/Cards.tsx` — não eram
++  usados em nenhuma página (o `TeamCard` real, usado em `/equipes`, tinha um
++  nome diferente: `TeamLogoCard`, hoje renomeado para `TeamCard` dentro de
++  `features/teams/components/`).
++
++## O que foi dividido
++
++- `Drivers.tsx` (listagem + detalhe no mesmo arquivo) → `DriversList.tsx` +
++  `DriverDetail.tsx`.
++- `Teams.tsx` (idem) → `TeamsList.tsx` + `TeamDetail.tsx`.
++- `Cards.tsx` (4 componentes genéricos num arquivo só) → um componente por
++  feature (`NewsCard`, `DriverCard`, `TeamCard`).
++- `gridData.ts` (tipos + dados + funções de acesso, tudo junto) →
++  `lib/types.ts` (só tipos) + `lib/entities.ts` (dados e funções de busca).
++- `f1Api.ts` (fetch + mapeamento de IDs, tudo junto) → `f1Api.ts` (só fetch) +
++  `f1Mappings.ts` (só os mapas de ID, que crescem a cada temporada nova).
++
++## Validação
++
++Depois da reorganização, foram checados:
++- `npx tsc --noEmit` → sem erros
++- `npm run build` → build de produção passa
++- `npx vitest run` → testes passam
++- As 9 rotas do app testadas via `vite preview` → todas retornam 200 e
++  carregam o bundle correto
+diff --git a/src/App.css b/src/App.css
+deleted file mode 100644
+index b9d355d..0000000
+--- a/src/App.css
++++ /dev/null
+@@ -1,42 +0,0 @@
+-#root {
+-  max-width: 1280px;
+-  margin: 0 auto;
+-  padding: 2rem;
+-  text-align: center;
+-}
+-
+-.logo {
+-  height: 6em;
+-  padding: 1.5em;
+-  will-change: filter;
+-  transition: filter 300ms;
+-}
+-.logo:hover {
+-  filter: drop-shadow(0 0 2em #646cffaa);
+-}
+-.logo.react:hover {
+-  filter: drop-shadow(0 0 2em #61dafbaa);
+-}
+-
+-@keyframes logo-spin {
+-  from {
+-    transform: rotate(0deg);
+-  }
+-  to {
+-    transform: rotate(360deg);
+-  }
+-}
+-
+-@media (prefers-reduced-motion: no-preference) {
+-  a:nth-of-type(2) .logo {
+-    animation: logo-spin infinite 20s linear;
+-  }
+-}
+-
+-.card {
+-  padding: 2em;
+-}
+-
+-.read-the-docs {
+-  color: #888;
+-}
+diff --git a/src/App.tsx b/src/app/App.tsx
+similarity index 66%
+rename from src/App.tsx
+rename to src/app/App.tsx
+index 342ad8d..409f799 100644
+--- a/src/App.tsx
++++ b/src/app/App.tsx
+@@ -3,17 +3,19 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
+ import { Toaster as Sonner } from "@/components/ui/sonner";
+ import { Toaster } from "@/components/ui/toaster";
+ import { TooltipProvider } from "@/components/ui/tooltip";
+-import { GridProvider } from "@/context/GridContext";
+-import { GridShell } from "@/components/grid/GridShell";
+-import { ApiStatus } from "@/components/grid/ApiStatus";
+-import Home from "./pages/Home.tsx";
+-import News from "./pages/News.tsx";
+-import Drivers, { DriverDetail } from "./pages/Drivers.tsx";
+-import Teams, { TeamDetail } from "./pages/Teams.tsx";
+-import Calendar from "./pages/Calendar.tsx";
+-import Standings from "./pages/Standings.tsx";
+-import About from "./pages/About.tsx";
+-import NotFound from "./pages/NotFound.tsx";
++import { GridProvider } from "@/shared/context/GridContext";
++import { GridShell } from "@/shared/components/layout/GridShell";
++import { ApiStatus } from "@/shared/components/ApiStatus";
++import Home from "@/features/home/pages/Home";
++import News from "@/features/news/pages/News";
++import DriversList from "@/features/drivers/pages/DriversList";
++import { DriverDetail } from "@/features/drivers/pages/DriverDetail";
++import TeamsList from "@/features/teams/pages/TeamsList";
++import { TeamDetail } from "@/features/teams/pages/TeamDetail";
++import Calendar from "@/features/calendar/pages/Calendar";
++import Standings from "@/features/standings/pages/Standings";
++import About from "@/features/about/pages/About";
++import NotFound from "@/pages/NotFound";
+ 
+ const queryClient = new QueryClient({
+   defaultOptions: {
+diff --git a/src/components/grid/Cards.tsx b/src/components/grid/Cards.tsx
+deleted file mode 100644
+index feb2ff3..0000000
+--- a/src/components/grid/Cards.tsx
++++ /dev/null
+@@ -1,95 +0,0 @@
+-import { Link } from "react-router-dom";
+-import { ArrowRight } from "lucide-react";
+-import { Button } from "@/components/ui/button";
+-import { useGrid } from "@/context/GridContext";
+-import { Driver, NewsItem, Team, teamById } from "@/lib/gridData";
+-
+-export function NewsCard({ item }: { item: NewsItem }) {
+-  const { language } = useGrid();
+-  const team = teamById(item.teamId);
+-  const imageSrc = (item as any).image ? `/images/news/${(item as any).image}` : null;
+-
+-  return (
+-    <article className="group overflow-hidden rounded-lg border border-border bg-card shadow-card transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]">
+-      {/* Capa: foto real ou gradiente fallback */}
+-      <div className="relative h-44 overflow-hidden">
+-        {imageSrc ? (
+-          <img
+-            src={imageSrc}
+-            alt={item.title[language]}
+-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+-          />
+-        ) : (
+-          <div className="h-full w-full bg-[linear-gradient(135deg,hsl(var(--team-primary)/0.22),hsl(var(--muted)))]" />
+-        )}
+-        {/* Gradiente escuro na base para legibilidade */}
+-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+-        {/* Tag de equipe sobre a imagem */}
+-        <span
+-          className="absolute bottom-3 left-3 rounded-full px-2.5 py-0.5 text-xs font-bold text-white"
+-          style={{ background: `hsl(${team.primary} / 0.85)` }}
+-        >
+-          {team.name}
+-        </span>
+-      </div>
+-
+-      <div className="p-5">
+-        <div className="mb-2 text-xs text-muted-foreground">
+-          {new Date(`${item.date}T12:00:00`).toLocaleDateString(language === "pt" ? "pt-BR" : "en-GB")}
+-        </div>
+-        <h3 className="min-h-12 font-display text-xl font-bold leading-tight">{item.title[language]}</h3>
+-        <p className="mt-3 text-sm text-muted-foreground">{item.excerpt[language]}</p>
+-      </div>
+-    </article>
+-  );
+-}
+-
+-export function TeamCard({ team, onActivate }: { team: Team; onActivate?: () => void }) {
+-  const { t } = useGrid();
+-  return (
+-    <Link to={`/equipes/${team.id}`} onClick={onActivate} className="group flex flex-col rounded-lg border border-border bg-card p-5 shadow-card transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]">
+-      <span className="mb-5 block h-2 rounded-full" style={{ background: `linear-gradient(90deg, hsl(${team.primary}), hsl(${team.secondary}))` }} />
+-      <div className="text-3xl">{team.country}</div>
+-      <h3 className="mt-3 font-display text-2xl font-black">{team.name}</h3>
+-      <p className="mt-1 min-h-10 text-sm text-muted-foreground">{team.fullName}</p>
+-      <div className="mt-5 flex items-center justify-between text-sm"><span>{team.championships} {t.teams.championships}</span><ArrowRight className="h-4 w-4 text-primary transition-transform group-hover:translate-x-1" /></div>
+-    </Link>
+-  );
+-}
+-
+-export function DriverCard({ driver, team, onActivate }: { driver: Driver; team: Team; onActivate?: () => void }) {
+-  const { t } = useGrid();
+-  const faceSrc = `/images/drivers/face/${driver.id}.webp`;
+-
+-  return (
+-    <Link
+-      to={`/pilotos/${driver.id}`}
+-      onClick={onActivate}
+-      className="group flex flex-col rounded-lg border border-border bg-card p-5 shadow-card transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]"
+-    >
+-      <div className="flex items-center gap-3">
+-        <div
+-          className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-border"
+-          style={{ background: `linear-gradient(160deg, hsl(${team.primary} / 0.25) 0%, hsl(${team.primary} / 0.05) 100%)` }}
+-        >
+-          <img
+-            src={faceSrc}
+-            alt={driver.name}
+-            className="absolute bottom-0 left-1/2 h-full w-auto -translate-x-1/2 object-cover object-top"
+-            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+-          />
+-        </div>
+-        <span className="font-display text-3xl font-black leading-none" style={{ color: `hsl(${team.primary})` }}>
+-          #{driver.number}
+-        </span>
+-      </div>
+-      <h3 className="mt-4 font-display text-2xl font-black leading-tight">{driver.name}</h3>
+-      <p className="mt-1 text-sm text-muted-foreground">{team.name}</p>
+-      <Button variant="link" className="mt-4 h-auto p-0">{t.common.readMore}<ArrowRight /></Button>
+-    </Link>
+-  );
+-}
+-
+-export function StatPill({ label, value }: { label: string; value: string | number }) {
+-  return <div className="rounded-lg border border-border bg-muted/60 p-4"><div className="font-display text-2xl font-black">{value}</div><div className="text-sm text-muted-foreground">{label}</div></div>;
+-}
+diff --git a/src/pages/About.tsx b/src/features/about/pages/About.tsx
+similarity index 93%
+rename from src/pages/About.tsx
+rename to src/features/about/pages/About.tsx
+index 818f2cc..a8234dd 100644
+--- a/src/pages/About.tsx
++++ b/src/features/about/pages/About.tsx
+@@ -1,5 +1,5 @@
+ import { Info } from "lucide-react";
+-import { useGrid } from "@/context/GridContext";
++import { useGrid } from "@/shared/context/GridContext";
+ 
+ export default function About() {
+   const { t } = useGrid();
+diff --git a/src/components/grid/Countdown.tsx b/src/features/calendar/components/Countdown.tsx
+similarity index 95%
+rename from src/components/grid/Countdown.tsx
+rename to src/features/calendar/components/Countdown.tsx
+index 7387d37..ed255cc 100644
+--- a/src/components/grid/Countdown.tsx
++++ b/src/features/calendar/components/Countdown.tsx
+@@ -1,7 +1,7 @@
+ import { useEffect, useState } from "react";
+ import { CalendarClock } from "lucide-react";
+-import { useGrid } from "@/context/GridContext";
+-import { Race, formatRaceDate } from "@/lib/gridData";
++import { useGrid } from "@/shared/context/GridContext";
++import { Race, formatRaceDate } from "@/lib/entities";
+ 
+ function diffTo(date: string, time?: string | null) {
+   // Se a API fornecer o horário exato (ex: "13:00:00Z"), usa ele; senão assume 14:00 UTC
+diff --git a/src/data/calendar.json b/src/features/calendar/data/calendar.json
+similarity index 100%
+rename from src/data/calendar.json
+rename to src/features/calendar/data/calendar.json
+diff --git a/src/pages/Calendar.tsx b/src/features/calendar/pages/Calendar.tsx
+similarity index 95%
+rename from src/pages/Calendar.tsx
+rename to src/features/calendar/pages/Calendar.tsx
+index e5ff155..0f4778a 100644
+--- a/src/pages/Calendar.tsx
++++ b/src/features/calendar/pages/Calendar.tsx
+@@ -1,7 +1,7 @@
+-import { Countdown } from "@/components/grid/Countdown";
+-import { useGrid } from "@/context/GridContext";
+-import { formatRaceDate } from "@/lib/gridData";
+-import { useCalendar } from "@/hooks/useF1Data";
++import { Countdown } from "@/features/calendar/components/Countdown";
++import { useGrid } from "@/shared/context/GridContext";
++import { formatRaceDate } from "@/lib/entities";
++import { useCalendar } from "@/shared/hooks/useF1Data";
+ import { cn } from "@/lib/utils";
+ import { RefreshCw } from "lucide-react";
+ 
+diff --git a/src/features/drivers/components/DriverCard.tsx b/src/features/drivers/components/DriverCard.tsx
+new file mode 100644
+index 0000000..48c4d27
+--- /dev/null
++++ b/src/features/drivers/components/DriverCard.tsx
+@@ -0,0 +1,38 @@
++import { Link } from "react-router-dom";
++import { ArrowRight } from "lucide-react";
++import { Button } from "@/components/ui/button";
++import { useGrid } from "@/shared/context/GridContext";
++import type { Driver, Team } from "@/lib/types";
++
++export function DriverCard({ driver, team, onActivate }: { driver: Driver; team: Team; onActivate?: () => void }) {
++  const { t } = useGrid();
++  const faceSrc = `/images/drivers/face/${driver.id}.webp`;
++
++  return (
++    <Link
++      to={`/pilotos/${driver.id}`}
++      onClick={onActivate}
++      className="group flex flex-col rounded-lg border border-border bg-card p-5 shadow-card transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]"
++    >
++      <div className="flex items-center gap-3">
++        <div
++          className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-border"
++          style={{ background: `linear-gradient(160deg, hsl(${team.primary} / 0.25) 0%, hsl(${team.primary} / 0.05) 100%)` }}
++        >
++          <img
++            src={faceSrc}
++            alt={driver.name}
++            className="absolute bottom-0 left-1/2 h-full w-auto -translate-x-1/2 object-cover object-top"
++            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
++          />
++        </div>
++        <span className="font-display text-3xl font-black leading-none" style={{ color: `hsl(${team.primary})` }}>
++          #{driver.number}
++        </span>
++      </div>
++      <h3 className="mt-4 font-display text-2xl font-black leading-tight">{driver.name}</h3>
++      <p className="mt-1 text-sm text-muted-foreground">{team.name}</p>
++      <Button variant="link" className="mt-4 h-auto p-0">{t.common.readMore}<ArrowRight /></Button>
++    </Link>
++  );
++}
+diff --git a/src/data/driverBios.ts b/src/features/drivers/data/driverBios.ts
+similarity index 100%
+rename from src/data/driverBios.ts
+rename to src/features/drivers/data/driverBios.ts
+diff --git a/src/data/drivers.json b/src/features/drivers/data/drivers.json
+similarity index 100%
+rename from src/data/drivers.json
+rename to src/features/drivers/data/drivers.json
+diff --git a/src/pages/Drivers.tsx b/src/features/drivers/pages/DriverDetail.tsx
+similarity index 80%
+rename from src/pages/Drivers.tsx
+rename to src/features/drivers/pages/DriverDetail.tsx
+index 97d819c..0528bf6 100644
+--- a/src/pages/Drivers.tsx
++++ b/src/features/drivers/pages/DriverDetail.tsx
+@@ -1,35 +1,9 @@
+-import { useEffect, useState } from "react";
++import { useEffect } from "react";
+ import { useParams } from "react-router-dom";
+-import { DriverCard } from "@/components/grid/Cards";
+-import { Button } from "@/components/ui/button";
+-import { useGrid } from "@/context/GridContext";
+-import { driverById, drivers, teamById } from "@/lib/gridData";
+-import driverBios from "@/data/driverBios";
+-
+-export default function Drivers() {
+-  const { t, teams, setThemeTeam } = useGrid();
+-  const [teamFilter, setTeamFilter] = useState("all");
+-  const filtered = teamFilter === "all" ? drivers : drivers.filter((driver) => driver.teamId === teamFilter);
+-  return (
+-    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+-      <h1 className="font-display text-5xl font-black animate-fade-up">{t.drivers.title}</h1>
+-      <p className="mt-3 text-muted-foreground animate-fade-up" style={{ animationDelay: "100ms" }}>{t.drivers.subtitle}</p>
+-      <div className="my-8 flex flex-wrap gap-2 animate-fade-up" style={{ animationDelay: "180ms" }}>
+-        <Button variant={teamFilter === "all" ? "hero" : "soft"} onClick={() => setTeamFilter("all")}>{t.common.all}</Button>
+-        {teams.map((team) => (
+-          <Button key={team.id} variant={teamFilter === team.id ? "hero" : "soft"} onClick={() => setTeamFilter(team.id)}>{team.name}</Button>
+-        ))}
+-      </div>
+-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+-        {filtered.map((driver, i) => (
+-          <div key={driver.id} className="animate-fade-up" style={{ animationDelay: `${260 + i * 80}ms` }}>
+-            <DriverCard driver={driver} team={teamById(driver.teamId)} onActivate={() => setThemeTeam(driver.teamId)} />
+-          </div>
+-        ))}
+-      </div>
+-    </section>
+-  );
+-}
++import { useGrid } from "@/shared/context/GridContext";
++import { driverById, drivers, teamById } from "@/lib/entities";
++import driverBios from "@/features/drivers/data/driverBios";
++import { useDriverStandings } from "@/shared/hooks/useF1Data";
+ 
+ export function DriverDetail() {
+   const { id } = useParams();
+@@ -45,6 +19,15 @@ export function DriverDetail() {
+   const manualBio = (driverBios as Record<string, string | undefined>)[driver.id];
+   const champ = driver.championships ?? 0;
+ 
++  // Linha de classificação ao vivo (API) para este piloto — cai para o JSON
++  // local (driver.season) automaticamente se a API não trouxer o piloto.
++  const { data: driverStandings } = useDriverStandings();
++  const liveRow = driverStandings?.find((row) => row.driverId === driver.id);
++  const seasonPoints = liveRow?.points ?? driver.season?.points ?? 0;
++  const seasonWins = liveRow?.wins ?? driver.season?.wins ?? 0;
++  const seasonPodiums = driver.season?.podiums ?? 0;
++  const seasonPosition = liveRow?.position ?? driver.season?.position;
++
+   return (
+     <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+       <div className="rounded-lg border border-border bg-card p-6 shadow-card">
+@@ -85,7 +68,7 @@ export function DriverDetail() {
+             ) : (
+               <p className="mt-3 text-sm text-muted-foreground">
+                 ✍️ {language === "pt" ? "Edite em" : "Edit in"}{" "}
+-                <code className="rounded bg-background px-1.5 py-0.5">src/data/driverBios.ts</code>
++                <code className="rounded bg-background px-1.5 py-0.5">src/features/drivers/data/driverBios.ts</code>
+               </p>
+             )}
+           </div>
+@@ -156,10 +139,10 @@ export function DriverDetail() {
+         <h2 className="mt-10 font-display text-2xl font-bold">{language === "pt" ? "Temporada 2026" : "2026 Season"}</h2>
+         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+           {[
+-            { label: language === "pt" ? "Pontos" : "Points", value: driver.season?.points ?? 0 },
+-            { label: language === "pt" ? "Vitórias" : "Wins", value: driver.season?.wins ?? 0 },
+-            { label: language === "pt" ? "Pódios" : "Podiums", value: driver.season?.podiums ?? 0 },
+-            { label: language === "pt" ? "Posição" : "Position", value: `P${driver.season?.position ?? "—"}` },
++            { label: language === "pt" ? "Pontos" : "Points", value: seasonPoints },
++            { label: language === "pt" ? "Vitórias" : "Wins", value: seasonWins },
++            { label: language === "pt" ? "Pódios" : "Podiums", value: seasonPodiums },
++            { label: language === "pt" ? "Posição" : "Position", value: `P${seasonPosition ?? "—"}` },
+           ].map(({ label, value }) => (
+             <div key={label} className="rounded-xl border border-border bg-muted/50 p-4 text-center">
+               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
+@@ -189,3 +172,5 @@ export function DriverDetail() {
+     </section>
+   );
+ }
++
++export default DriverDetail;
+diff --git a/src/features/drivers/pages/DriversList.tsx b/src/features/drivers/pages/DriversList.tsx
+new file mode 100644
+index 0000000..9bff1f7
+--- /dev/null
++++ b/src/features/drivers/pages/DriversList.tsx
+@@ -0,0 +1,30 @@
++import { useState } from "react";
++import { DriverCard } from "@/features/drivers/components/DriverCard";
++import { Button } from "@/components/ui/button";
++import { useGrid } from "@/shared/context/GridContext";
++import { drivers, teamById } from "@/lib/entities";
++
++export default function DriversList() {
++  const { t, teams, setThemeTeam } = useGrid();
++  const [teamFilter, setTeamFilter] = useState("all");
++  const filtered = teamFilter === "all" ? drivers : drivers.filter((driver) => driver.teamId === teamFilter);
++  return (
++    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
++      <h1 className="font-display text-5xl font-black animate-fade-up">{t.drivers.title}</h1>
++      <p className="mt-3 text-muted-foreground animate-fade-up" style={{ animationDelay: "100ms" }}>{t.drivers.subtitle}</p>
++      <div className="my-8 flex flex-wrap gap-2 animate-fade-up" style={{ animationDelay: "180ms" }}>
++        <Button variant={teamFilter === "all" ? "hero" : "soft"} onClick={() => setTeamFilter("all")}>{t.common.all}</Button>
++        {teams.map((team) => (
++          <Button key={team.id} variant={teamFilter === team.id ? "hero" : "soft"} onClick={() => setTeamFilter(team.id)}>{team.name}</Button>
++        ))}
++      </div>
++      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
++        {filtered.map((driver, i) => (
++          <div key={driver.id} className="animate-fade-up" style={{ animationDelay: `${260 + i * 80}ms` }}>
++            <DriverCard driver={driver} team={teamById(driver.teamId)} onActivate={() => setThemeTeam(driver.teamId)} />
++          </div>
++        ))}
++      </div>
++    </section>
++  );
++}
+diff --git a/src/pages/Home.tsx b/src/features/home/pages/Home.tsx
+similarity index 97%
+rename from src/pages/Home.tsx
+rename to src/features/home/pages/Home.tsx
+index 6c68342..b3c5586 100644
+--- a/src/pages/Home.tsx
++++ b/src/features/home/pages/Home.tsx
+@@ -1,11 +1,11 @@
+ import { Link } from "react-router-dom";
+ import { ArrowRight, Trophy, Flag } from "lucide-react";
+ import { Button } from "@/components/ui/button";
+-import { Countdown } from "@/components/grid/Countdown";
+-import { NewsCard } from "@/components/grid/Cards";
+-import { useGrid } from "@/context/GridContext";
+-import { drivers, news, teamById } from "@/lib/gridData";
+-import { useStandings, useNextRace, useLastRaceResults } from "@/hooks/useF1Data";
++import { Countdown } from "@/features/calendar/components/Countdown";
++import { NewsCard } from "@/features/news/components/NewsCard";
++import { useGrid } from "@/shared/context/GridContext";
++import { drivers, news, teamById } from "@/lib/entities";
++import { useStandings, useNextRace, useLastRaceResults } from "@/shared/hooks/useF1Data";
+ 
+ export default function Home() {
+   const { t, language } = useGrid();
+diff --git a/src/features/news/components/NewsCard.tsx b/src/features/news/components/NewsCard.tsx
+new file mode 100644
+index 0000000..bf8ca2b
+--- /dev/null
++++ b/src/features/news/components/NewsCard.tsx
+@@ -0,0 +1,42 @@
++import { useGrid } from "@/shared/context/GridContext";
++import { teamById, type NewsItem } from "@/lib/entities";
++
++export function NewsCard({ item }: { item: NewsItem }) {
++  const { language } = useGrid();
++  const team = teamById(item.teamId);
++  const imageSrc = (item as any).image ? `/images/news/${(item as any).image}` : null;
++
++  return (
++    <article className="group overflow-hidden rounded-lg border border-border bg-card shadow-card transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_hsl(var(--team-primary)/0.45)]">
++      {/* Capa: foto real ou gradiente fallback */}
++      <div className="relative h-44 overflow-hidden">
++        {imageSrc ? (
++          <img
++            src={imageSrc}
++            alt={item.title[language]}
++            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
++          />
++        ) : (
++          <div className="h-full w-full bg-[linear-gradient(135deg,hsl(var(--team-primary)/0.22),hsl(var(--muted)))]" />
++        )}
++        {/* Gradiente escuro na base para legibilidade */}
++        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
++        {/* Tag de equipe sobre a imagem */}
++        <span
++          className="absolute bottom-3 left-3 rounded-full px-2.5 py-0.5 text-xs font-bold text-white"
++          style={{ background: `hsl(${team.primary} / 0.85)` }}
++        >
++          {team.name}
++        </span>
++      </div>
++
++      <div className="p-5">
++        <div className="mb-2 text-xs text-muted-foreground">
++          {new Date(`${item.date}T12:00:00`).toLocaleDateString(language === "pt" ? "pt-BR" : "en-GB")}
++        </div>
++        <h3 className="min-h-12 font-display text-xl font-bold leading-tight">{item.title[language]}</h3>
++        <p className="mt-3 text-sm text-muted-foreground">{item.excerpt[language]}</p>
++      </div>
++    </article>
++  );
++}
+diff --git a/src/data/news.json b/src/features/news/data/news.json
+similarity index 100%
+rename from src/data/news.json
+rename to src/features/news/data/news.json
+diff --git a/src/pages/News.tsx b/src/features/news/pages/News.tsx
+similarity index 77%
+rename from src/pages/News.tsx
+rename to src/features/news/pages/News.tsx
+index f02511b..1b08144 100644
+--- a/src/pages/News.tsx
++++ b/src/features/news/pages/News.tsx
+@@ -1,6 +1,6 @@
+-import { NewsCard } from "@/components/grid/Cards";
+-import { useGrid } from "@/context/GridContext";
+-import { news } from "@/lib/gridData";
++import { NewsCard } from "@/features/news/components/NewsCard";
++import { useGrid } from "@/shared/context/GridContext";
++import { news } from "@/lib/entities";
+ 
+ export default function News() {
+   const { t } = useGrid();
+diff --git a/src/pages/Standings.tsx b/src/features/standings/pages/Standings.tsx
+similarity index 98%
+rename from src/pages/Standings.tsx
+rename to src/features/standings/pages/Standings.tsx
+index 105dafb..0370f8a 100644
+--- a/src/pages/Standings.tsx
++++ b/src/features/standings/pages/Standings.tsx
+@@ -1,8 +1,8 @@
+ import { Link } from "react-router-dom";
+ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+-import { useGrid } from "@/context/GridContext";
+-import { drivers as localDrivers, teams as localTeams } from "@/lib/gridData";
+-import { useStandings } from "@/hooks/useF1Data";
++import { useGrid } from "@/shared/context/GridContext";
++import { drivers as localDrivers, teams as localTeams } from "@/lib/entities";
++import { useStandings } from "@/shared/hooks/useF1Data";
+ import { RefreshCw } from "lucide-react";
+ 
+ // Helpers completamente seguros — nunca retornam null/undefined
+diff --git a/src/features/teams/components/TeamCard.tsx b/src/features/teams/components/TeamCard.tsx
+new file mode 100644
+index 0000000..8d25aa1
+--- /dev/null
++++ b/src/features/teams/components/TeamCard.tsx
+@@ -0,0 +1,59 @@
++import { Link } from "react-router-dom";
++import type { Team } from "@/lib/types";
++
++export function TeamCard({ team }: { team: Team }) {
++  const primaryColor = `hsl(${team.primary})`;
++  const secondaryColor = `hsl(${team.secondary})`;
++  return (
++    <Link
++      to={`/equipes/${team.id}`}
++      className="group relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 transition-all duration-300 hover:scale-105 hover:border-transparent"
++      style={
++        {
++          "--team-glow": primaryColor,
++        } as React.CSSProperties
++      }
++    >
++      {/* Glow background on hover */}
++      <div
++        className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
++        style={{
++          background: `radial-gradient(circle at center, ${primaryColor}33 0%, ${primaryColor}11 50%, transparent 70%)`,
++          boxShadow: `inset 0 0 40px ${primaryColor}22`,
++        }}
++      />
++      {/* Border glow */}
++      <div
++        className="absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
++        style={{
++          boxShadow: `0 0 20px ${primaryColor}66, 0 0 40px ${primaryColor}33`,
++          border: `1px solid ${primaryColor}88`,
++        }}
++      />
++      {/* Color bar top */}
++      <div
++        className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
++        style={{ background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})` }}
++      />
++      {/* Logo */}
++      <div className="relative z-10 flex h-3/5 w-3/5 items-center justify-center p-3">
++        <img
++          src={`/images/teams/logos/${team.id}.png`}
++          alt={team.name}
++          className="h-full w-full object-contain transition-all duration-300 group-hover:drop-shadow-lg"
++          style={{ filter: "drop-shadow(0 0 0px transparent)" }}
++          onMouseEnter={(e) => {
++            (e.currentTarget as HTMLImageElement).style.filter = `drop-shadow(0 0 8px ${primaryColor})`;
++          }}
++          onMouseLeave={(e) => {
++            (e.currentTarget as HTMLImageElement).style.filter = "drop-shadow(0 0 0px transparent)";
++          }}
++        />
++      </div>
++      {/* Team name */}
++      <p className="relative z-10 mt-2 text-center text-sm font-bold text-white/60 transition-colors duration-300 group-hover:text-white">
++        {team.name}
++      </p>
++    </Link>
++  );
++}
+diff --git a/src/data/teams.json b/src/features/teams/data/teams.json
+similarity index 100%
+rename from src/data/teams.json
+rename to src/features/teams/data/teams.json
+diff --git a/src/pages/Teams.tsx b/src/features/teams/pages/TeamDetail.tsx
+similarity index 69%
+rename from src/pages/Teams.tsx
+rename to src/features/teams/pages/TeamDetail.tsx
+index fcd13da..aac816a 100644
+--- a/src/pages/Teams.tsx
++++ b/src/features/teams/pages/TeamDetail.tsx
+@@ -1,82 +1,9 @@
+ import { useEffect } from "react";
+ import { Link, useParams } from "react-router-dom";
+ 
+-import { useGrid } from "@/context/GridContext";
+-import { driversByTeam, teamById } from "@/lib/gridData";
+-
+-export default function Teams() {
+-  const { t, teams } = useGrid();
+-  return (
+-    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+-      <h1 className="font-display text-5xl font-black animate-fade-up">{t.teams.title}</h1>
+-      <p className="mt-3 text-muted-foreground animate-fade-up" style={{ animationDelay: "100ms" }}>{t.teams.subtitle}</p>
+-      <div className="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+-        {teams.map((team, i) => (
+-          <div key={team.id} className="animate-fade-up" style={{ animationDelay: `${120 + i * 80}ms` }}>
+-            <TeamLogoCard team={team} />
+-          </div>
+-        ))}
+-      </div>
+-    </section>
+-  );
+-}
+-
+-function TeamLogoCard({ team }: { team: ReturnType<typeof teamById> }) {
+-  const primaryColor = `hsl(${team.primary})`;
+-  const secondaryColor = `hsl(${team.secondary})`;
+-  return (
+-    <Link
+-      to={`/equipes/${team.id}`}
+-      className="group relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 transition-all duration-300 hover:scale-105 hover:border-transparent"
+-      style={
+-        {
+-          "--team-glow": primaryColor,
+-        } as React.CSSProperties
+-      }
+-    >
+-      {/* Glow background on hover */}
+-      <div
+-        className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+-        style={{
+-          background: `radial-gradient(circle at center, ${primaryColor}33 0%, ${primaryColor}11 50%, transparent 70%)`,
+-          boxShadow: `inset 0 0 40px ${primaryColor}22`,
+-        }}
+-      />
+-      {/* Border glow */}
+-      <div
+-        className="absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+-        style={{
+-          boxShadow: `0 0 20px ${primaryColor}66, 0 0 40px ${primaryColor}33`,
+-          border: `1px solid ${primaryColor}88`,
+-        }}
+-      />
+-      {/* Color bar top */}
+-      <div
+-        className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+-        style={{ background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})` }}
+-      />
+-      {/* Logo */}
+-      <div className="relative z-10 flex h-3/5 w-3/5 items-center justify-center p-3">
+-        <img
+-          src={`/images/teams/logos/${team.id}.png`}
+-          alt={team.name}
+-          className="h-full w-full object-contain transition-all duration-300 group-hover:drop-shadow-lg"
+-          style={{ filter: "drop-shadow(0 0 0px transparent)" }}
+-          onMouseEnter={(e) => {
+-            (e.currentTarget as HTMLImageElement).style.filter = `drop-shadow(0 0 8px ${primaryColor})`;
+-          }}
+-          onMouseLeave={(e) => {
+-            (e.currentTarget as HTMLImageElement).style.filter = "drop-shadow(0 0 0px transparent)";
+-          }}
+-        />
+-      </div>
+-      {/* Team name */}
+-      <p className="relative z-10 mt-2 text-center text-sm font-bold text-white/60 transition-colors duration-300 group-hover:text-white">
+-        {team.name}
+-      </p>
+-    </Link>
+-  );
+-}
++import { useGrid } from "@/shared/context/GridContext";
++import { driversByTeam, teamById } from "@/lib/entities";
++import { useConstructorStandings } from "@/shared/hooks/useF1Data";
+ 
+ export function TeamDetail() {
+   const { id } = useParams();
+@@ -86,6 +13,10 @@ export function TeamDetail() {
+   const primaryColor = `hsl(${team.primary})`;
+   const secondaryColor = `hsl(${team.secondary})`;
+ 
++  // Linha de classificação de construtores ao vivo (API) para esta equipe.
++  const { data: constructorStandings } = useConstructorStandings();
++  const liveRow = constructorStandings?.find((row) => row.teamId === team.id);
++
+   useEffect(() => {
+     setThemeTeam(team.id);
+     return () => setThemeTeam(favoriteTeam.id);
+@@ -189,10 +120,25 @@ export function TeamDetail() {
+         )}
+       </div>
+ 
+-      {/* Dados atuais da temporada — reservado */}
+-      <div className="mt-6 rounded-2xl border border-dashed border-white/20 bg-zinc-900/50 p-6">
+-        <h2 className="font-display text-2xl font-bold">{language === "pt" ? "Dados da Temporada 2026" : "2026 Season Data"}</h2>
+-        <p className="mt-2 text-sm text-white/40">{language === "pt" ? "Em breve — dados atuais da temporada serão adicionados aqui." : "Coming soon — current season data will be added here."}</p>
++      {/* Dados atuais da temporada — ao vivo via API (Ergast) */}
++      <div className="mt-6 rounded-2xl border border-white/10 bg-zinc-900 p-6">
++        <h2 className="font-display text-2xl font-bold text-white">
++          {language === "pt" ? "Dados da Temporada 2026" : "2026 Season Data"}
++        </h2>
++        <div className="mt-4 grid grid-cols-3 gap-3">
++          {[
++            { label: language === "pt" ? "Pontos" : "Points", value: liveRow?.points ?? 0 },
++            { label: language === "pt" ? "Vitórias" : "Wins", value: liveRow?.wins ?? 0 },
++            { label: language === "pt" ? "Posição" : "Position", value: `P${liveRow?.position ?? "—"}` },
++          ].map(({ label, value }) => (
++            <div key={label} className="rounded-xl border border-white/10 bg-zinc-800/60 p-4 text-center">
++              <p className="text-xs font-semibold uppercase tracking-widest text-white/40">{label}</p>
++              <p className="mt-1 font-display text-3xl font-black" style={{ color: primaryColor }}>
++                {value}
++              </p>
++            </div>
++          ))}
++        </div>
+       </div>
+ 
+       {/* Foto do carro */}
+@@ -269,3 +215,5 @@ export function TeamDetail() {
+     </section>
+   );
+ }
++
++export default TeamDetail;
+diff --git a/src/features/teams/pages/TeamsList.tsx b/src/features/teams/pages/TeamsList.tsx
+new file mode 100644
+index 0000000..118bcf5
+--- /dev/null
++++ b/src/features/teams/pages/TeamsList.tsx
+@@ -0,0 +1,19 @@
++import { useGrid } from "@/shared/context/GridContext";
++import { TeamCard } from "@/features/teams/components/TeamCard";
++
++export default function TeamsList() {
++  const { t, teams } = useGrid();
++  return (
++    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
++      <h1 className="font-display text-5xl font-black animate-fade-up">{t.teams.title}</h1>
++      <p className="mt-3 text-muted-foreground animate-fade-up" style={{ animationDelay: "100ms" }}>{t.teams.subtitle}</p>
++      <div className="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
++        {teams.map((team, i) => (
++          <div key={team.id} className="animate-fade-up" style={{ animationDelay: `${120 + i * 80}ms` }}>
++            <TeamCard team={team} />
++          </div>
++        ))}
++      </div>
++    </section>
++  );
++}
+diff --git a/src/lib/entities.ts b/src/lib/entities.ts
+new file mode 100644
+index 0000000..1a452dc
+--- /dev/null
++++ b/src/lib/entities.ts
+@@ -0,0 +1,29 @@
++/**
++ * Ponto único de acesso aos dados estáticos (fallback) do app.
++ * Cada JSON mora dentro da pasta da sua própria feature; este arquivo só
++ * importa, tipa e expõe funções de busca (teamById, driverById, etc).
++ */
++import driversJson from "@/features/drivers/data/drivers.json";
++import teamsJson from "@/features/teams/data/teams.json";
++import calendarJson from "@/features/calendar/data/calendar.json";
++import newsJson from "@/features/news/data/news.json";
++import standings from "@/data/standings.json";
++import type { Team, Driver, Race, Lang } from "@/lib/types";
++
++export type { Team, Driver, Race, Lang };
++export type NewsItem = (typeof newsJson)[number];
++
++export const teams = teamsJson as Team[];
++export const drivers = driversJson as Driver[];
++export const calendar = calendarJson as Race[];
++export const news = newsJson;
++export { standings };
++
++export const teamById = (id: string) => teams.find((team) => team.id === id) || teams[1];
++export const driverById = (id: string) => drivers.find((driver) => driver.id === id);
++export const driversByTeam = (teamId: string) => drivers.filter((driver) => driver.teamId === teamId);
++export const nextRace = calendar.find((race) => race.status === "next") || calendar.find((race) => race.status === "upcoming") || calendar[0];
++
++export function formatRaceDate(date: string, language: Lang) {
++  return new Intl.DateTimeFormat(language === "pt" ? "pt-BR" : "en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${date}T12:00:00`));
++}
+diff --git a/src/lib/gridData.ts b/src/lib/gridData.ts
+deleted file mode 100644
+index f73ae2d..0000000
+--- a/src/lib/gridData.ts
++++ /dev/null
+@@ -1,61 +0,0 @@
+-import driversJson from "@/data/drivers.json";
+-import teamsJson from "@/data/teams.json";
+-import calendarJson from "@/data/calendar.json";
+-import newsJson from "@/data/news.json";
+-import standings from "@/data/standings.json";
+-
+-export type Lang = "pt" | "en";
+-
+-export type Team = {
+-  id: string;
+-  name: string;
+-  fullName: string;
+-  primary: string;
+-  secondary: string;
+-  base: string;
+-  championships: number;
+-  car: string;
+-  country?: string;
+-  history: { pt: string; en: string };
+-  curiosities: { pt: string[]; en: string[] };
+-};
+-
+-export type Driver = {
+-  id: string;
+-  name: string;
+-  number: number;
+-  teamId: string;
+-  flag?: string;
+-  nationality?: { pt: string; en: string };
+-  bio?: { pt: string; en: string };
+-  facts?: { pt: string[]; en: string[] };
+-  championships?: number;
+-  stats: { starts: number; wins: number; podiums: number; poles: number; dnfs?: number };
+-  season: { position: number; points: number; wins?: number; podiums?: number };
+-};
+-
+-export type Race = {
+-  id: string;
+-  name: { pt: string; en: string };
+-  circuit: string;
+-  date: string;
+-  status: string;
+-  flag?: string;
+-};
+-
+-export type NewsItem = (typeof newsJson)[number];
+-
+-export const teams = teamsJson as Team[];
+-export const drivers = driversJson as Driver[];
+-export const calendar = calendarJson as Race[];
+-export const news = newsJson;
+-export { standings };
+-
+-export const teamById = (id: string) => teams.find((team) => team.id === id) || teams[1];
+-export const driverById = (id: string) => drivers.find((driver) => driver.id === id);
+-export const driversByTeam = (teamId: string) => drivers.filter((driver) => driver.teamId === teamId);
+-export const nextRace = calendar.find((race) => race.status === "next") || calendar.find((race) => race.status === "upcoming") || calendar[0];
+-
+-export function formatRaceDate(date: string, language: Lang) {
+-  return new Intl.DateTimeFormat(language === "pt" ? "pt-BR" : "en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${date}T12:00:00`));
+-}
+diff --git a/src/lib/types.ts b/src/lib/types.ts
+new file mode 100644
+index 0000000..3ea0291
+--- /dev/null
++++ b/src/lib/types.ts
+@@ -0,0 +1,38 @@
++export type Lang = "pt" | "en";
++
++export type Team = {
++  id: string;
++  name: string;
++  fullName: string;
++  primary: string;
++  secondary: string;
++  base: string;
++  championships: number;
++  car: string;
++  country?: string;
++  history: { pt: string; en: string };
++  curiosities: { pt: string[]; en: string[] };
++};
++
++export type Driver = {
++  id: string;
++  name: string;
++  number: number;
++  teamId: string;
++  flag?: string;
++  nationality?: { pt: string; en: string };
++  bio?: { pt: string; en: string };
++  facts?: { pt: string[]; en: string[] };
++  championships?: number;
++  stats: { starts: number; wins: number; podiums: number; poles: number; dnfs?: number };
++  season: { position: number; points: number; wins?: number; podiums?: number };
++};
++
++export type Race = {
++  id: string;
++  name: { pt: string; en: string };
++  circuit: string;
++  date: string;
++  status: string;
++  flag?: string;
++};
+diff --git a/src/main.tsx b/src/main.tsx
+index 68176a7..e6d9fee 100644
+--- a/src/main.tsx
++++ b/src/main.tsx
+@@ -1,5 +1,5 @@
+ import { createRoot } from "react-dom/client";
+-import App from "./App.tsx";
++import App from "./app/App.tsx";
+ import "./index.css";
+ 
+ createRoot(document.getElementById("root")!).render(<App />);
+diff --git a/src/pages/Index.tsx b/src/pages/Index.tsx
+deleted file mode 100644
+index 8a25453..0000000
+--- a/src/pages/Index.tsx
++++ /dev/null
+@@ -1,16 +0,0 @@
+-// Update this page (the content is just a fallback if you fail to update the page)
+-
+-// IMPORTANT: Fully REPLACE this with your own code
+-const PlaceholderIndex = () => {
+-  // PLACEHOLDER: Replace this entire return statement with the user's app.
+-  // The inline background color is intentionally not part of the design system.
+-  return (
+-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
+-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+-    </div>
+-  );
+-};
+-
+-const Index = PlaceholderIndex;
+-
+-export default Index;
+diff --git a/src/components/grid/ApiStatus.tsx b/src/shared/components/ApiStatus.tsx
+similarity index 100%
+rename from src/components/grid/ApiStatus.tsx
+rename to src/shared/components/ApiStatus.tsx
+diff --git a/src/components/NavLink.tsx b/src/shared/components/NavLink.tsx
+similarity index 100%
+rename from src/components/NavLink.tsx
+rename to src/shared/components/NavLink.tsx
+diff --git a/src/components/grid/GridShell.tsx b/src/shared/components/layout/GridShell.tsx
+similarity index 98%
+rename from src/components/grid/GridShell.tsx
+rename to src/shared/components/layout/GridShell.tsx
+index 7b015d8..96f7bdd 100644
+--- a/src/components/grid/GridShell.tsx
++++ b/src/shared/components/layout/GridShell.tsx
+@@ -1,10 +1,10 @@
+ import { Menu, X, Languages } from "lucide-react";
+-import { ApiStatus } from "@/components/grid/ApiStatus";
++import { ApiStatus } from "@/shared/components/ApiStatus";
+ import { useState } from "react";
+ import { NavLink, Outlet, useLocation } from "react-router-dom";
+ import { Button } from "@/components/ui/button";
+ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+-import { useGrid } from "@/context/GridContext";
++import { useGrid } from "@/shared/context/GridContext";
+ import { cn } from "@/lib/utils";
+ 
+ const navItems = [
+diff --git a/src/context/GridContext.tsx b/src/shared/context/GridContext.tsx
+similarity index 98%
+rename from src/context/GridContext.tsx
+rename to src/shared/context/GridContext.tsx
+index 3815631..0cb60e3 100644
+--- a/src/context/GridContext.tsx
++++ b/src/shared/context/GridContext.tsx
+@@ -1,5 +1,5 @@
+ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+-import teams from "@/data/teams.json";
++import teams from "@/features/teams/data/teams.json";
+ import pt from "@/i18n/pt.json";
+ import en from "@/i18n/en.json";
+ 
+diff --git a/src/hooks/useF1Data.ts b/src/shared/hooks/useF1Data.ts
+similarity index 96%
+rename from src/hooks/useF1Data.ts
+rename to src/shared/hooks/useF1Data.ts
+index 492b49b..06b5878 100644
+--- a/src/hooks/useF1Data.ts
++++ b/src/shared/hooks/useF1Data.ts
+@@ -12,10 +12,10 @@ import {
+   fetchOpenF1Drivers,
+   fetchLatestSession,
+   fetchLivePositions,
+-} from "@/services/f1Api";
++} from "@/shared/services/f1Api";
+ import standingsJson from "@/data/standings.json";
+-import driversJson from "@/data/drivers.json";
+-import calendarJson from "@/data/calendar.json";
++import driversJson from "@/features/drivers/data/drivers.json";
++import calendarJson from "@/features/calendar/data/calendar.json";
+ 
+ // ─── Fallback data bem formado (mesmo shape que a API retorna) ────────────────
+ 
+diff --git a/src/services/f1Api.ts b/src/shared/services/f1Api.ts
+similarity index 88%
+rename from src/services/f1Api.ts
+rename to src/shared/services/f1Api.ts
+index 3049c0b..6770337 100644
+--- a/src/services/f1Api.ts
++++ b/src/shared/services/f1Api.ts
+@@ -53,57 +53,9 @@ export interface ErgastResult {
+   FastestLap?: { rank: string; Time: { time: string } };
+ }
+ 
+-// Map Ergast constructorId → app teamId
+-const CONSTRUCTOR_MAP: Record<string, string> = {
+-  mercedes: "mercedes",
+-  ferrari: "ferrari",
+-  mclaren: "mclaren",
+-  red_bull: "red-bull",
+-  alpine: "alpine",
+-  haas: "haas",
+-  williams: "williams",
+-  rb: "racing-bulls",
+-  racing_bulls: "racing-bulls",
+-  aston_martin: "aston-martin",
+-  kick_sauber: "audi",
+-  sauber: "audi",
+-  audi: "audi",
+-  cadillac: "cadillac",
+-  andretti: "cadillac",
+-};
+-
+-// Map Ergast driverId → app driverId (handles differences)
+-const DRIVER_MAP: Record<string, string> = {
+-  antonelli: "antonelli",
+-  russell: "russell",
+-  leclerc: "leclerc",
+-  hamilton: "hamilton",
+-  norris: "norris",
+-  piastri: "piastri",
+-  bearman: "bearman",
+-  gasly: "gasly",
+-  verstappen: "verstappen",
+-  lawson: "lawson",
+-  hadjar: "hadjar",
+-  bortoleto: "bortoleto",
+-  sainz: "sainz",
+-  ocon: "ocon",
+-  colapinto: "colapinto",
+-  hulkenberg: "hulkenberg",
+-  albon: "albon",
+-  bottas: "bottas",
+-  perez: "perez",
+-  alonso: "alonso",
+-  stroll: "stroll",
+-  lindblad: "lindblad",
+-};
+-
+-function mapDriverId(ergastId: string): string {
+-  return DRIVER_MAP[ergastId] ?? ergastId;
+-}
+-function mapConstructorId(ergastId: string): string {
+-  return CONSTRUCTOR_MAP[ergastId] ?? ergastId;
+-}
++// Map Ergast constructorId/driverId → app IDs (mantidos em arquivo próprio
++// porque crescem a cada temporada com entradas de pilotos/equipes novas)
++import { mapConstructorId, mapDriverId } from "@/shared/services/f1Mappings";
+ 
+ // Ano atual da temporada F1 — atualizar quando mudar de temporada
+ const CURRENT_SEASON = "2026";
+diff --git a/src/shared/services/f1Mappings.ts b/src/shared/services/f1Mappings.ts
+new file mode 100644
+index 0000000..7e14516
+--- /dev/null
++++ b/src/shared/services/f1Mappings.ts
+@@ -0,0 +1,57 @@
++/**
++ * Mapeamento de IDs da API Ergast → IDs usados internamente pelo app.
++ * Atualizar aqui sempre que um piloto ou equipe novo entrar na temporada.
++ */
++
++// Ergast constructorId → app teamId
++const CONSTRUCTOR_MAP: Record<string, string> = {
++  mercedes: "mercedes",
++  ferrari: "ferrari",
++  mclaren: "mclaren",
++  red_bull: "red-bull",
++  alpine: "alpine",
++  haas: "haas",
++  williams: "williams",
++  rb: "racing-bulls",
++  racing_bulls: "racing-bulls",
++  aston_martin: "aston-martin",
++  kick_sauber: "audi",
++  sauber: "audi",
++  audi: "audi",
++  cadillac: "cadillac",
++  andretti: "cadillac",
++};
++
++// Ergast driverId → app driverId (cobre diferenças de nomenclatura)
++const DRIVER_MAP: Record<string, string> = {
++  antonelli: "antonelli",
++  russell: "russell",
++  leclerc: "leclerc",
++  hamilton: "hamilton",
++  norris: "norris",
++  piastri: "piastri",
++  bearman: "bearman",
++  gasly: "gasly",
++  verstappen: "verstappen",
++  lawson: "lawson",
++  hadjar: "hadjar",
++  bortoleto: "bortoleto",
++  sainz: "sainz",
++  ocon: "ocon",
++  colapinto: "colapinto",
++  hulkenberg: "hulkenberg",
++  albon: "albon",
++  bottas: "bottas",
++  perez: "perez",
++  alonso: "alonso",
++  stroll: "stroll",
++  lindblad: "lindblad",
++};
++
++export function mapDriverId(ergastId: string): string {
++  return DRIVER_MAP[ergastId] ?? ergastId;
++}
++
++export function mapConstructorId(ergastId: string): string {
++  return CONSTRUCTOR_MAP[ergastId] ?? ergastId;
++}
