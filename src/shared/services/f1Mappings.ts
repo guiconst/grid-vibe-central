@@ -54,6 +54,15 @@ export function mapDriverId(ergastId: string): string {
   return DRIVER_MAP[ergastId] ?? ergastId;
 }
 
+const APP_ID_TO_ERGAST: Record<string, string> = {
+  verstappen: "max_verstappen",
+  lindblad: "arvid_lindblad",
+};
+
+export function ergastDriverId(appDriverId: string): string {
+  return APP_ID_TO_ERGAST[appDriverId] ?? appDriverId;
+}
+
 export function mapConstructorId(ergastId: string): string {
   return CONSTRUCTOR_MAP[ergastId] ?? ergastId;
 }
