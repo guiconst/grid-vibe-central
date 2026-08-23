@@ -33,6 +33,7 @@ const DRIVER_MAP: Record<string, string> = {
   bearman: "bearman",
   gasly: "gasly",
   verstappen: "verstappen",
+  max_verstappen: "verstappen",
   lawson: "lawson",
   hadjar: "hadjar",
   bortoleto: "bortoleto",
@@ -46,6 +47,7 @@ const DRIVER_MAP: Record<string, string> = {
   alonso: "alonso",
   stroll: "stroll",
   lindblad: "lindblad",
+  arvid_lindblad: "lindblad",
 };
 
 export function mapDriverId(ergastId: string): string {
