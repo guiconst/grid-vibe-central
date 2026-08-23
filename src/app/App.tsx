@@ -37,9 +37,9 @@ const App = () => (
             <Route element={<GridShell />}>
               <Route path="/" element={<Home />} />
               <Route path="/noticias" element={<News />} />
-              <Route path="/pilotos" element={<Drivers />} />
+              <Route path="/pilotos" element={<DriversList />} />
               <Route path="/pilotos/:id" element={<DriverDetail />} />
-              <Route path="/equipes" element={<Teams />} />
+              <Route path="/equipes" element={<TeamsList />} />
               <Route path="/equipes/:id" element={<TeamDetail />} />
               <Route path="/calendario" element={<Calendar />} />
               <Route path="/classificacao" element={<Standings />} />
