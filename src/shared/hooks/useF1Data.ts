@@ -12,7 +12,9 @@ import {
   fetchOpenF1Drivers,
   fetchLatestSession,
   fetchLivePositions,
+  fetchDriverCareerStats,
 } from "@/shared/services/f1Api";
+import { ergastDriverId } from "@/shared/services/f1Mappings";
 import standingsJson from "@/data/standings.json";
 import driversJson from "@/features/drivers/data/drivers.json";
 import calendarJson from "@/features/calendar/data/calendar.json";
@@ -149,5 +151,17 @@ export function useLivePositions() {
     refetchInterval: isLive ? 5_000 : false,
     staleTime: 4_000,
     retry: 1,
+  });
+}
+
+export function useDriverCareerStats(appDriverId: string) {
+  const ergastId = ergastDriverId(appDriverId);
+  return useQuery({
+    queryKey: ["f1", "career-stats", ergastId],
+    queryFn: () => fetchDriverCareerStats(ergastId),
+    staleTime: 24 * 60 * 60 * 1000,
+    gcTime: 48 * 60 * 60 * 1000,
+    retry: 2,
+    enabled: !!appDriverId,
   });
 }
