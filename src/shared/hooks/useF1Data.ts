@@ -45,7 +45,7 @@ const CONSTRUCTOR_FALLBACK = standingsJson.constructors.map((c) => ({
 export function useDriverStandings() {
   return useQuery({
     queryKey: ["f1", "driver-standings"],
-    queryFn: fetchDriverStandings,
+    queryFn: () => fetchDriverStandings(),
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     retry: 2,
@@ -59,7 +59,7 @@ export function useDriverStandings() {
 export function useConstructorStandings() {
   return useQuery({
     queryKey: ["f1", "constructor-standings"],
-    queryFn: fetchConstructorStandings,
+    queryFn: () => fetchConstructorStandings(),
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     retry: 2,
