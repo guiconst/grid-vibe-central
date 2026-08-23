@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useGrid } from "@/shared/context/GridContext";
 import { driverById, drivers, teamById } from "@/lib/entities";
 import driverBios from "@/features/drivers/data/driverBios";
-import { useDriverStandings } from "@/shared/hooks/useF1Data";
+import { useDriverStandings, useDriverCareerStats } from "@/shared/hooks/useF1Data";
 
 export function DriverDetail() {
   const { id } = useParams();
@@ -27,6 +27,7 @@ export function DriverDetail() {
   const seasonWins = liveRow?.wins ?? driver.season?.wins ?? 0;
   const seasonPodiums = driver.season?.podiums ?? 0;
   const seasonPosition = liveRow?.position ?? driver.season?.position;
+  const { data: careerStats } = useDriverCareerStats(driver.id);
 
   return (
     <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
@@ -155,11 +156,11 @@ export function DriverDetail() {
         <h2 className="mt-10 font-display text-2xl font-bold">{language === "pt" ? "Carreira" : "Career Stats"}</h2>
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
           {[
-            { label: language === "pt" ? "Largadas" : "Starts", value: driver.stats.starts },
-            { label: language === "pt" ? "Vitórias" : "Wins", value: driver.stats.wins },
-            { label: language === "pt" ? "Pódios" : "Podiums", value: driver.stats.podiums },
-            { label: language === "pt" ? "Poles" : "Poles", value: driver.stats.poles },
-            { label: "DNFs", value: driver.stats.dnfs ?? 0 },
+            { label: language === "pt" ? "Largadas" : "Starts", value: careerStats?.starts ?? driver.stats.starts },
+            { label: language === "pt" ? "Vitórias" : "Wins", value: careerStats?.wins ?? driver.stats.wins },
+            { label: language === "pt" ? "Pódios" : "Podiums", value: careerStats?.podiums ?? driver.stats.podiums },
+            { label: language === "pt" ? "Poles" : "Poles", value: careerStats?.poles ?? driver.stats.poles },
+            { label: "DNFs", value: careerStats?.dnfs ?? driver.stats.dnfs ?? 0 },
           ].map(({ label, value }) => (
             <div key={label} className="rounded-xl border border-border bg-muted/50 p-4 text-center">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
