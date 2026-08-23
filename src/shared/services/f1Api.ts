@@ -47,6 +47,7 @@ export interface ErgastRace {
 export interface ErgastResult {
   position: string;
   points: string;
+  grid: string;
   Driver: { driverId: string; givenName: string; familyName: string };
   Constructor: { constructorId: string; name: string };
   status: string;
@@ -204,6 +205,47 @@ export async function fetchDriverSeasonStats(season = CURRENT_SEASON) {
     };
   }
   return stats;
+}
+
+// ─── Carreira completa do piloto ───────────────────────────────────────────
+
+export interface DriverCareerStats {
+  starts: number;
+  wins: number;
+  podiums: number;
+  poles: number;
+  dnfs: number;
+}
+
+export async function fetchDriverCareerStats(ergastDriverId: string): Promise<DriverCareerStats> {
+  const limit = 1000;
+  let offset = 0;
+  let total = Infinity;
+  const allResults: ErgastResult[] = [];
+
+  while (offset < total) {
+    const res = await fetch(`${ERGAST}/drivers/${ergastDriverId}/results/?limit=${limit}&offset=${offset}`);
+    if (!res.ok) throw new Error(`Ergast career results: ${res.status}`);
+    const json = await res.json();
+    total = Number(json.MRData?.total ?? 0);
+    const races: ErgastRace[] = json.MRData?.RaceTable?.Races ?? [];
+    for (const race of races) {
+      if (race.Results) allResults.push(...race.Results);
+    }
+    if (races.length === 0) break;
+    offset += limit;
+  }
+
+  let wins = 0, podiums = 0, poles = 0, dnfs = 0;
+  for (const r of allResults) {
+    const pos = Number(r.position);
+    if (pos === 1) wins++;
+    if (pos >= 1 && pos <= 3) podiums++;
+    if (r.grid === "1") poles++;
+    if (r.status !== "Finished" && !r.status.startsWith("+")) dnfs++;
+  }
+
+  return { starts: allResults.length, wins, podiums, poles, dnfs };
 }
 
 // ─── OpenF1 ─────────────────────────────────────────────────────────────────
