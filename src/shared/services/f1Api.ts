@@ -236,17 +236,26 @@ export async function fetchDriverCareerStats(ergastDriverId: string): Promise<Dr
     if (races.length === 0) break;
     offset += effectiveLimit;
   }
+  
+let wins = 0;
+let podiums = 0;
+let poles = 0;
+let dnfs = 0;
 
-  let wins = 0, podiums = 0, poles = 0, dnfs = 0;
-  for (const r of allResults) {
-    const pos = Number(r.position);
+for (const r of allResults) {
+  const pos = Number(r.position);
+  const finishedClassified =
+    r.status === "Finished" || r.status === "Lapped" || (r.status?.startsWith("+") ?? false);
+
+  if (finishedClassified) {
     if (pos === 1) wins++;
     if (pos >= 1 && pos <= 3) podiums++;
-    if (r.grid === "1") poles++;
-    if (r.status !== "Finished" && !r.status.startsWith("+")) dnfs++;
   }
+  if (r.grid === "1") poles++;
+  if (!finishedClassified) dnfs++;
+}
 
-  return { starts: allResults.length, wins, podiums, poles, dnfs };
+return { starts: allResults.length, wins, podiums, poles, dnfs };
 }
 
 // ─── OpenF1 ─────────────────────────────────────────────────────────────────
