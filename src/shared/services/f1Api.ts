@@ -218,22 +218,23 @@ export interface DriverCareerStats {
 }
 
 export async function fetchDriverCareerStats(ergastDriverId: string): Promise<DriverCareerStats> {
-  const limit = 1000;
+  const pageSize = 1000;
   let offset = 0;
   let total = Infinity;
   const allResults: ErgastResult[] = [];
 
   while (offset < total) {
-    const res = await fetch(`${ERGAST}/drivers/${ergastDriverId}/results/?limit=${limit}&offset=${offset}`);
+    const res = await fetch(`${ERGAST}/drivers/${ergastDriverId}/results/?limit=${pageSize}&offset=${offset}`);
     if (!res.ok) throw new Error(`Ergast career results: ${res.status}`);
     const json = await res.json();
     total = Number(json.MRData?.total ?? 0);
+    const effectiveLimit = Number(json.MRData?.limit ?? pageSize) || pageSize;
     const races: ErgastRace[] = json.MRData?.RaceTable?.Races ?? [];
     for (const race of races) {
       if (race.Results) allResults.push(...race.Results);
     }
     if (races.length === 0) break;
-    offset += limit;
+    offset += effectiveLimit;
   }
 
   let wins = 0, podiums = 0, poles = 0, dnfs = 0;
